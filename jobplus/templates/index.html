@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block body %}
+    {% for job in jobs %}
+    <h4>{{job.id}}.{{job.name}}</h4>
+    {% endfor %}
+{% endblock %}
