@@ -7,5 +7,3 @@
 * [esun127](https://github.com/esun127)
 =======
 
-*[shihao丶H](https://github.com/shihaoH)
->>>>>>> shihaoH添加个人信息
