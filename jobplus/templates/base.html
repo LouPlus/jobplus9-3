@@ -1,5 +1,60 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-    {% block body %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% block head_css %}
+    <link rel="stylesheet" href="http://labfile.oss.aliyuncs.com/courses/923/week7/code/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static',filename='main.css') }}">
     {% endblock %}
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">JobPlus</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/">职位<span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">公司</a></li>
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="">用户注册</a></li>
+                    <li><a href="">企业注册</a></li>
+                    <li><a href="">登录</a></li>
+
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    {% block bigimage %}{% endblock%}
+    <div class="container">
+
+        {% block body %}{% endblock %}
+        {% block footer %}{% endblock %}
+    </div>
+    <hr>
+    <div class="foot">
+        Copyright 2018 by 实验楼
+    </div>
+    {% block tail_js %}
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <script src="http://labfile.oss.aliyuncs.com/courses/923/week7/code/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    {% endblock %}
+</body>
+
 </html>
