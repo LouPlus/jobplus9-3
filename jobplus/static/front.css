@@ -1,0 +1,70 @@
+
+/* 首页样式 */
+
+.jumbotron{
+    width: 100% !important;
+}
+.nav-tabs{
+    margin-bottom: 20px !important;
+}
+hr{
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+}
+
+.job-title,.job-time{
+    display: inline;
+}
+.job-time{
+    color: gray;
+    font-size: 12px
+}
+div.job-b{
+    height: 70px;
+}
+div.job-lb{
+    float: left;
+    width: 70px;
+}
+div.job-lb img{
+
+    margin: 10px;
+    width: 50px;
+    height: 50px;
+}
+div.job-rb{
+    float: left;
+}
+div.job-rb p{
+    height: 25px;
+    line-height: 30px;
+    margin: 0px;
+    margin-top: 5px;
+}
+.job-cname{
+    font-size: 20px;
+}
+.more{
+    margin: 0 auto;
+    margin-bottom: 20px;
+    width: 250px;
+}
+.more a{
+    width: 250px !important;
+
+}
+.company{
+    text-align: center;
+}
+.company img{
+    width: 80px;
+
+}
+.job-num{
+    text-align: center;
+}
+/* 间距 */
+.mb-small{
+    margin-bottom: 10px;
+
+}

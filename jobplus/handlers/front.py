@@ -5,5 +5,4 @@ front = Blueprint('front', __name__)
 
 @front.route('/')
 def index():
-    jobs = Job.query.all()
-    return render_template('index.html', jobs=jobs)
+    return render_template('index.html')
