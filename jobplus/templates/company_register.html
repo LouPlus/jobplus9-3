@@ -6,3 +6,9 @@
 {{ render_form(form,url_for('front.company_register'),'企业名') }}
 </div>
 {% endblock %}
+{% block tail_js %}
+{{ super() }}
+<script>
+    $('#company_register').addClass('active');
+</script>
+{% endblock %}

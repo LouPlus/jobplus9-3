@@ -1,6 +1,9 @@
 .navbar{
     border-radius: 0px !important;
 }
+.navbar-brand{
+    margin-bottom: 0;
+}
 .foot{
     width: 100%;
     text-align: center;

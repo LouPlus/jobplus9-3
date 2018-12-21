@@ -57,3 +57,9 @@
 
 {{ render_pagination(pagination, 'job.index') }}
 {% endblock %}
+{% block tail_js %}
+{{ super() }}
+<script>
+    $('#jobs').addClass('active');
+</script>
+{% endblock %}
