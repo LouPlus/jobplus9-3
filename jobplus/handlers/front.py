@@ -1,8 +1,46 @@
-from flask import Blueprint, render_template
-from jobplus.models import Job
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from jobplus.forms import RegisterForm, LoginForm
+from jobplus.models import User
+from flask_login import login_user, logout_user
 
 front = Blueprint('front', __name__)
 
 @front.route('/')
 def index():
     return render_template('index.html')
+
+@front.route('/user_register', methods=['GET','POST'])
+def user_register():
+    
+    form = RegisterForm()
+    if form.validate_on_submit():
+        form.create_user(30)
+        flash('用户注册成功，请完善信息！', 'success')
+        return render_template('login.html')
+    return render_template('user_register.html',form=form)
+
+@front.route('/company_register', methods=['GET','POST'])
+def company_register():
+    form = RegisterForm()
+    form.username.label.text='企业名'
+    if form.validate_on_submit():
+        form.create_user(20)
+        flash('企业注册成功，请完善信息！', 'success')
+        return render_template('login.html')
+    return render_template('company_register.html',form=form)
+
+@front.route('/login', methods=['GET','POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        login_user(user,form.remember_me.data)
+        return redirect(url_for('.index'))
+    return render_template('login.html',form=form)
+
+@front.route('/logout')
+def logout():
+    logout_user()
+    flash('已经成功退出登录', 'success')
+    return redirect(url_for('.index'))
+        

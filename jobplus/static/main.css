@@ -1,6 +1,13 @@
+.navbar{
+    border-radius: 0px !important;
+}
 .foot{
     width: 100%;
     text-align: center;
     margin-top: 10px;
     margin-bottom: 20px;
+}
+.form{
+    width: 400px;
+    margin: 0 auto;
 }
