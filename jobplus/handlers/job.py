@@ -10,5 +10,5 @@ job = Blueprint('job', __name__, url_prefix='/job')
 @job.route('/')
 def index():
     jobs = Job.query.all()
-    now = datetime.utcnow()
-    return render_template('job/index.html', jobs=jobs, now=now)
+#    now = datetime.utcnow()
+    return render_template('job/index.html', jobs=jobs)
