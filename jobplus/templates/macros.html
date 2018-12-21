@@ -1,18 +1,23 @@
-{% macro job_item() %}
+{% macro job_item(job) %}
 <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
         <div class="caption">
             <div class="mb-small">
-                <h3 class="job-title">Python高级工程师</h3>
-                <p class="job-time">[1月前]</p>
+                <h3 class="job-title">{{ job.name | default('Python高级工程师', true) }}</h3>
+                <!-- p class="job-time">[1月前]</p -->
+                <p class="job-time">[{{ moment().fromTime(job.updated_at, refresh=True) }}]</p>
             </div>
             <div class="mb-small">
-                <span class="job-exp">经验不限</span>
-                <span class="job-edu">学历不限</span>
+            {% for tag in job.tags %}
+                <span class="job-exp">{{ tag.name| default('不限', true) }}</span>
+            {% endfor %}
+                <!-- span class="job-edu">学历不限</span -->
             </div>
             <div class="jobtags">
-                <span class="label label-default">高薪</span>
-                <span class="label label-default">北京</span>
+            {% for city in job.cities %}
+                <span class="label label-default">{{ city.name | default('北京', true) }}</span>
+                <!-- span class="label label-default">北京</span -->
+            {% endfor %}
             </div>
         </div>
         <hr>
@@ -22,7 +27,7 @@
                     alt="...">
             </div>
             <div class="job-rb">
-                <p class="job-cname">实验楼</p>
+                <p class="job-cname">{{ job.company.name | default('实验楼', true) }}</p>
                 <p class='job-cinfo'>在线教育/A轮/成都高新区</p>
             </div>
         </div>
