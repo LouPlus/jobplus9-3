@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% from "macros.html" import render_pagination %}
+
 
 {% block head_js %}
          {{ moment.include_jquery() }}
@@ -13,41 +15,45 @@
 </div>
 
 <div class="job-list">
-{% for job in jobs %}
-<div class="col-sm-6 col-md-4">
-  <div class="job-box">
-      <div class="caption">
-        <a href="/job/{{job.id}}">
-        <b>{{ job.name }}</b> <span class="timesince">[ 发布于{{ moment().fromTime(job.updated_at, refresh=True) }} ]</span>
-        <p>{{ job.requirement }}</p>
+{% for job in pagination.items %}
+    <div class="col-sm-6 col-md-4">
+        <div class="job-box">
+            <div class="caption">
+                <a href="/job/{{job.id}}">
+                    <b>{{ job.name }}</b> <span class="timesince">[ 发布于{{ moment().fromTime(job.updated_at, refresh=True) }} ]</span>
+                    <p>{{ job.requirement }}</p>
         
-        <strong class="text-green">{{ job.salary_range }}</strong><br/>
-        {% for tag in job.tags %}
-        <span class="label label-default">{{ tag.name }}</span>
-        {% endfor %}<br/>
+                    <strong class="text-green">{{ job.salary_range }}</strong><br/>
+                    {% for tag in job.tags %}
+                        <span class="label label-default">{{ tag.name }}</span>
+                    {% endfor %}<br/>
 
-        {% for city in job.cities %}
-        <span class="label label-default">{{city.name}}</span>
-        {% endfor %}<br/>
+                    {% for city in job.cities %}
+                        <span class="label label-default">{{city.name}}</span>
+                    {% endfor %}<br/>
         
-        </a>
-      </div>
-      <hr>
-      <div class="media">
-        <div class="media-left">
-          <a href="/company/#">
-          <img class="media-object" src="https://static.lagou.com/thumbnail_160x160/i/image2/M00/13/BF/CgotOVnwYgKAQxwQAADd4llXXGw444.png" width="40" height="40" alt="...">
-          </a>
-          </div>
-          <div class="media-body">
-          <a href="/company/#">
-          <h4 class="media-heading">{{ job.company.name }}</h4>
-          </a>
-          <span class="company-meta">None/None/</span>
-          </div>
+                </a>
+            </div>
+            <hr>
+
+            <div class="media">
+                <div class="media-left">
+                    <a href="/company/#">
+                        <img class="media-object" src="https://static.lagou.com/thumbnail_160x160/i/image2/M00/13/BF/CgotOVnwYgKAQxwQAADd4llXXGw444.png" width="40" height="40" alt="...">
+                    </a>
+                </div>
+            </div>
+            <div class="media-body">
+                <a href="/company/#">
+                    <h4 class="media-heading">{{ job.company.name }}</h4>
+                </a>
+                <span class="company-meta">None/None/</span>
+            </div>
         </div>
-  </div>
+        
+    </div>
 </div>
 {% endfor %}
-</div>
+
+{{ render_pagination(pagination, 'job.index') }}
 {% endblock %}
