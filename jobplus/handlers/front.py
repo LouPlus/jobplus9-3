@@ -7,7 +7,7 @@ front = Blueprint('front', __name__)
 
 @front.route('/')
 def index():
-    jobs = Job.query.all()
+    jobs = Job.query.order_by(Job.updated_at.desc()).limit(9)
     return render_template('index.html', jobs=jobs)
 
 @front.route('/user_register', methods=['GET','POST'])
