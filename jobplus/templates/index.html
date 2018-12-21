@@ -4,6 +4,7 @@
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static',filename='front.css') }}">
 {% endblock %}
+{% block title %}首页{% endblock %}
 {% block bigimage %}
 <div class="jumbotron">
     <div class="container">
