@@ -74,3 +74,27 @@
     {% endfor %}
 </form>
 {% endmacro %}
+
+{% macro render_pagination(pagination, endpoint) %}
+<nav class="nav-pagination" aria-label="Page navigation">
+    <ul class="pagination">
+        <!-- 链接到上一页的左箭头(&laquo;), 如果没有上一页设为disable状态 -->
+        <li{% if not pagination.has_prev %} class="disabled" {% endif %}><a href="{{ url_for(endpoint, page=pagination.prev_num) if pagination.has_prev else '#' }}">&laquo;</a></li>
+        <!-- 渲染到每个页数的按钮 -->
+        {% for page in pagination.iter_pages() %}
+            {% if page %}
+                {% if page != pagination.page %}
+                    <li><a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a></li>
+                {% else %}
+                <!-- 如果页数是当前页, 设置为选中状态 -->
+                <li class="active"><a href="#">{{page}}<span class="sr-only">(current)</span></a></li>
+                {% endif %}
+            {% else %}
+                <li><span class="ellipsis">...</span></li>
+            {% endif %}
+        {% endfor %}
+        <!-- 链接到下一页的右箭头(&raquo;), 如果没有下一页设置为disable状态 -->
+        <li{% if not pagination.has_next %} class="disabled"{% endif %}><a href="{{ url_for(endpoint, page=pagination.next_num) if pagination.has_next else '#' }}">&raquo;</a></li>
+    </ul>
+</nav>
+{% endmacro %}
