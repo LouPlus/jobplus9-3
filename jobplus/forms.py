@@ -56,11 +56,12 @@ class LoginForm(FlaskForm):
 class TagForm(FlaskForm):
     
     name = StringField('名称', validators=[DataRequired(), Length(1,20)])
-    submit = SubmitField('提交')
+
 
 
 
 class AddTagForm(TagForm):
+    tag_submit = SubmitField('提交')
 
     def validate_name(self, field):
         if Jtag.query.filter_by(name=field.data).first():
@@ -74,6 +75,7 @@ class AddTagForm(TagForm):
 
 
 class AddCityForm(TagForm):
+    city_submit = SubmitField('提交')
 
     def validate_name(self, field):
         if Jcity.query.filter_by(name=field.data).first():
@@ -88,6 +90,7 @@ class AddCityForm(TagForm):
 
 
 class AddSalaryForm(TagForm):
+    salary_submit  = SubmitField('提交')
 
     def validate_name(self, field):
         reg = re.compile(r'\d+--\d+')

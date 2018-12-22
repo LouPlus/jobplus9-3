@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, current_app, flash
-from flask import url_for
+from flask import url_for, redirect
 from jobplus.models import Job
 from jobplus.forms import AddCityForm, AddTagForm, AddSalaryForm
 
@@ -27,15 +27,20 @@ def addtag():
     tagform = AddTagForm()
     cityform = AddCityForm()
     salaryform = AddSalaryForm()
-    flag = 0
-    for form in tagform, cityform, salaryform:
-        if form.validate_on_submit():
-            form.addtag()
-            flag += 1
-            flash('标签添加成功！', 'success')
 
-    if flag:
-        return url_for('company.addjob')
+    if tagform.tag_submit.data and tagform.validate_on_submit():
+        tagform.addtag()
+        flash('标签添加成功！', 'success')
+
+    if cityform.city_submit.data and cityform.validate_on_submit():
+        cityform.addtag()
+        flash('城市添加成功', 'success')
+
+    if salaryform.salary_submit.data and salaryform.validate_on_submit():
+        salaryform.addtag()
+        flash('薪资范围添加成功', 'success')
+
+
     return render_template('job/addtag.html', tagform=tagform, cityform=cityform, salaryform=salaryform)
 
 
