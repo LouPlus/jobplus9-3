@@ -111,12 +111,12 @@ class Salary_Range(db.Model):
     __tablename__ =  'salary_range'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    srrange = db.Column(db.String(20))
+    name = db.Column(db.String(20), nullable=False)
     jobs = db.relationship('Job')
 
 
     def __repr__(self):
-       return '--'.join([x+'元' for x in self.srrange.split('--')])
+       return '--'.join([x+'元' for x in self.name.split('--')])
 
     __str__ = __repr__
 

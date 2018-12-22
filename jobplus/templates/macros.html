@@ -55,7 +55,19 @@
     {% if field.type == 'CSRFTokenField' %}
     {{ '' }}
     {% elif field.type == 'SubmitField' %}
-    {{ form.submit(class='btn btn-primary', type='submit') }}
+
+    <!--此处添加部分是为了处理/job/creatatag页面-->
+        {% if field.name == 'tag_submit' %}
+            {{ form.tag_submit(class='btn btn-primary', type='submit') }}
+        {% elif field.name == 'city_submit' %}
+            {{ form.city_submit(class='btn btn-primary', type='submit') }}
+        {% elif field.name == 'salary_submit' %}
+            {{ form.salary_submit(class='btn btn-primary', type='submit') }}
+        {% else %}
+            {{ form.submit(class='btn btn-primary', type='submit') }}
+        {% endif %}
+    <!--结束-->
+
     {% elif field.type == 'BooleanField' %}
     <div class="checkbox">
       <label>{{ field() }} {{ field.label.text }}</label>
