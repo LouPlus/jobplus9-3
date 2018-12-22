@@ -72,6 +72,12 @@
     <div class="checkbox">
       <label>{{ field() }} {{ field.label.text }}</label>
     </div>
+
+    <!--  增加对自定义field的渲染   -->
+    <!--{% elif field.type == 'TagListField' %}-->
+
+    <!--  增加对自定义field的渲染 结束-->
+
     {% else %}
     <div class="form-group {% if field.errors %}has-error{% endif %}">
         {{ field.label }} {{ field(class='form-control') }}
