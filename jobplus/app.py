@@ -6,12 +6,12 @@ from flask_login import LoginManager
 
 from flask_moment import Moment
 
+
+
 def register_extentions(app):
     db.init_app(app)
-
-    Moment(app)
-
     Migrate(app,db)
+    Moment(app)
     login_manager = LoginManager()
     login_manager.init_app(app)
 
@@ -29,7 +29,8 @@ def register_blueprints(app):
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(configs.get(config))
-    
+   
+     
     register_extentions(app)
     register_blueprints(app)
     

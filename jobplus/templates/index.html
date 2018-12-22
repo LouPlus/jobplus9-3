@@ -1,9 +1,18 @@
 {% extends "base.html" %}
-{% from "macros.html" import job_item,company_item %}
+{% from "macros.html" import job_item with context %}
+{% from "macros.html" import company_item %}
+
 {% block head_css %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static',filename='front.css') }}">
 {% endblock %}
+
+{% block head_js %}
+        {{ moment.include_jquery() }}
+        {{ moment.include_moment() }}
+        {{ moment.lang('zh-CN') }}
+{% endblock %}
+
 {% block title %}首页{% endblock %}
 {% block bigimage %}
 <div class="jumbotron">
@@ -18,18 +27,14 @@
     <li role="presentation" class="active"><a href="#">最新职位</a></li>
 </ul>
 <div class="row">
-    {{ job_item() }}
-    {{ job_item() }}
-    {{ job_item() }}
-    {{ job_item() }}
-    {{ job_item() }}
-    {{ job_item() }}
-    {{ job_item() }}
-    {{ job_item() }}
-    {{ job_item() }}
+{% for job in jobs %}
+    {{ job_item(job) }}
+{% endfor %}
 </div>
+
+
 <div class="more">
-    <a href="#" class="btn btn-default btn-lg" role="button">查看更多</a>
+    <a href="{{ url_for('job.index') }}" class="btn btn-default btn-lg" role="button">查看更多</a>
 </div>
 
 <ul class="nav nav-tabs">
@@ -48,4 +53,10 @@
 <div class="more">
     <a href="#" class="btn btn-default btn-lg" role="button">查看更多</a>
 </div>
+{% endblock %}
+{% block tail_js %}
+{{ super() }}
+<script>
+    $('#homepage').addClass('active');
+</script>
 {% endblock %}

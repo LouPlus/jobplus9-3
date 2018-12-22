@@ -28,14 +28,18 @@ class User(Base, UserMixin):
 
     @property
     def password(self):
+        """Python 风格的 getter """
         return self._password
 
     @password.setter
     def password(self, ori_password):
+        """ Python 风格的 setter, 这样设置 user.password 就会自动为 password 生成哈希制存入 _password 字段 """
         self._password = generate_password_hash(ori_password)
 
     def check_password(self,password):
+        """ 判断用户输入的密码和存储的 hash 密码是否相等 """
         return check_password_hash(self._password,password)
+       
 
     @property
     def is_company(self):
@@ -53,8 +57,16 @@ class Company(Base):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(128), unique=True, index=True, nullable=False)
+    website = db.Column(db.String(64), unique=True)
+    # 公司简介
+    profile = db.Column(db.String(128))
+    # 公司详细介绍
+    description = db.Column(db.String(512))
+    # Logo图片 url 地址
+    url = db.Column(db.String(128), default="https://pic.baike.soso.com/ugc/baikepic2/18723/20180202144851-1145158508_jpg_462_344_6048.jpg/0")
+    address = db.Column(db.String(64), nullable=False)
     jobs = db.relationship('Job')
-
+    
     def __repr__(self):
         return '<Company:{}>'.format(self.name)
 
