@@ -120,6 +120,20 @@ class AddSalaryForm(TagForm):
 
 
 
+JobForm = model_form(Job,
+                     db_session=db.session, base_class=FlaskForm,
+                     only=['name','requirements', 'tags', 'cities', 'salary_range', 'company'],
+                     field_args =
+                     {
+                        'name': { 'label':'岗位名称', 'validators':[DataRequired(), Length(1, 32)]},
+                        'requirements': {'label':'职位要求'},
+                         'tags': {'label':'关键字'},
+                         'cities': {'label':'工作城市'},
+                         'salary_range': {'label':'薪资范围'},
+                         'company': {'label':'公司'}
+                        },
+                     )
+
 
 
 
@@ -137,6 +151,25 @@ JobForm = model_form(Job,
                         },
                      )
 
+class AddJobForm(JobForm):
+
+
+    submit = SubmitField('提交')
+
+    def addjob(self):
+        job = Job(name=self.name.data,
+                  requirements=self.requirements.data,
+                  salary_range=self.salary_range.data,
+                  company=self.company.data,
+                  tags=self.tags.data,
+                  cities=self.cities.data)
+        db.session.add(job)
+        db.session.commit()
+
+    def updatejob(self, job):
+        self.populate_obj(job)   # 从表单中获取最新数据并填充到对象job
+        db.session.add(job)
+        db.session.commit()
 
 
 class AddJobForm(JobForm):

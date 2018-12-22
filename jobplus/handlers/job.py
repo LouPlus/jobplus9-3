@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, request, current_app, flash, abort
 from flask import url_for, redirect
+
 from jobplus.models import db, Job, Jtag, Jcity, Salary_Range
 from jobplus.forms import AddCityForm, AddTagForm, AddSalaryForm, AddJobForm
+
 
 
 
@@ -35,11 +37,16 @@ def addtag():
         return redirect(url_for('.addtag'))
 
 
+
     if cityform.city_submit.data:
         if cityform.validate_on_submit():
             cityform.addtag()
             flash('城市添加成功', 'success')
         return redirect(url_for('.addtag'))
+
+
+
+
 
     if salaryform.salary_submit.data:
         if salaryform.validate_on_submit():
@@ -49,6 +56,7 @@ def addtag():
 
 
     return render_template('job/addtag.html', tagform=tagform, cityform=cityform, salaryform=salaryform)
+
 
 
 @job.route('/deltag')
@@ -133,11 +141,6 @@ def updatetag():
                            cityform=cityform,
                            salaryform=salaryform,
                            url=url)
-
-
-
-
-
 
 
 
