@@ -61,6 +61,12 @@ class TagForm(FlaskForm):
     name = StringField('名称', validators=[DataRequired(), Length(1,20)])
 
 
+    def updatetag(self, tag):
+        self.populate_obj(tag)
+        db.session.add(tag)
+        db.session.commit()
+
+
 
 
 class AddTagForm(TagForm):
@@ -77,6 +83,7 @@ class AddTagForm(TagForm):
 
 
 
+
 class AddCityForm(TagForm):
     city_submit = SubmitField('提交')
 
@@ -89,6 +96,7 @@ class AddCityForm(TagForm):
         tag = Jcity(name=self.name.data)
         db.session.add(tag)
         db.session.commit()
+
 
 
 
@@ -108,6 +116,9 @@ class AddSalaryForm(TagForm):
         tag = Salary_Range(name=self.name.data)
         db.session.add(tag)
         db.session.commit()
+
+
+
 
 
 
