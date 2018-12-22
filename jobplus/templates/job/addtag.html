@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% from "macros.html" import render_form %}
+{% block title %}添加职位标签|城市|薪资范围{% endblock %}
+{% block body %}
+
+<h4>添加职位标签</h4>
+<div class="form">
+
+    {{ render_form(tagform,  url_for('job.addtag'),'') }}
+
+</div>
+<hr>
+<h4>添加工作城市</h4>
+<div class="form">
+
+    {{ render_form(cityform,  url_for('job.addtag'),'') }}
+
+</div>
+<hr>
+<h4>添加薪资范围</h4>
+<div class="form">
+
+    {{ render_form(salaryform,  url_for('job.addtag'),'') }}
+
+</div>
+
+
+
+{% endblock %}
+{% block tail_js %}
+{{ super() }}
+{% endblock %}
