@@ -83,7 +83,7 @@ job_city = db.Table('job_city',
 
 
 
-class Jtag(Base):
+class Jtag(db.Model):
     __tablename__ = 'jtag'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -95,7 +95,7 @@ class Jtag(Base):
 
 
 
-class Jcity(Base):
+class Jcity(db.Model):
     __tablename__ = 'jcity'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -107,17 +107,16 @@ class Jcity(Base):
 
 
 
-class Salary_Range(Base):
+class Salary_Range(db.Model):
     __tablename__ =  'salary_range'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    left = db.Column(db.Integer)
-    right = db.Column(db.Integer)
+    srrange = db.Column(db.String(20))
     jobs = db.relationship('Job')
 
 
     def __repr__(self):
-        return '{}元 -- {}元'.format(self.left, self.right)
+       return '--'.join([x+'元' for x in self.srrange.split('--')])
 
     __str__ = __repr__
 
@@ -128,7 +127,7 @@ class Job(Base):
     __tablename__ = "job"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(32), unique=True, index=True, nullable=False)
+    name = db.Column(db.String(32), nullable=False)
     requirements = db.Column(db.String(1024))
     company_id = db.Column(db.Integer, db.ForeignKey('company.id', ondelete="CASCADE"))
     salary_range_id = db.Column(db.Integer, db.ForeignKey('salary_range.id',ondelete="SET NULL"))
@@ -141,4 +140,10 @@ class Job(Base):
 
     def __repr__(self):
         return "<Job:{}>".format(self.name)
+
+
+######  query_factory #######
+
+def get_salary_range():
+    return Salary_Range
 
