@@ -1,5 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy 
-from datetime import datetime 
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
@@ -39,17 +39,17 @@ class User(Base, UserMixin):
     def check_password(self,password):
         """ 判断用户输入的密码和存储的 hash 密码是否相等 """
         return check_password_hash(self._password,password)
-       
+
 
     @property
     def is_company(self):
-        return self.role == ROLE_COMPANY
+        return self.role == self.ROLE_COMPANY
 
     @property
     def is_admin(self):
-        return self.role == ROLE_ADMIN
+        return self.role == self.ROLE_ADMIN
 
-    
+
 
 
 class Company(Base):
@@ -66,7 +66,7 @@ class Company(Base):
     url = db.Column(db.String(128), default="https://pic.baike.soso.com/ugc/baikepic2/18723/20180202144851-1145158508_jpg_462_344_6048.jpg/0")
     address = db.Column(db.String(64), nullable=False)
     jobs = db.relationship('Job')
-    
+
     def __repr__(self):
         return '<Company:{}>'.format(self.name)
 
@@ -109,7 +109,7 @@ class Jcity(db.Model):
 
 class Salary_Range(db.Model):
     __tablename__ =  'salary_range'
-    
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(20), nullable=False)
     jobs = db.relationship('Job')
@@ -146,4 +146,3 @@ class Job(Base):
 
 def get_salary_range():
     return Salary_Range
-
