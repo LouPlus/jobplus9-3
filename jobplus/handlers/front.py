@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from jobplus.forms import RegisterForm, LoginForm
+from jobplus.forms import RegisterForm, LoginForm, CompanyProfileForm
 from jobplus.models import User, Job
 from flask_login import login_user, logout_user
 
@@ -38,6 +38,8 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         login_user(user,form.remember_me.data)
+        if user.is_company:
+            return redirect(url_for('company.profile'))
         return redirect(url_for('.index'))
     return render_template('login.html',form=form)
 

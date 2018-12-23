@@ -22,6 +22,7 @@ class User(Base, UserMixin):
     email = db.Column(db.String(64), unique=True, index=True, nullable=False)
     _password = db.Column('password', db.String(256), nullable=False)
     role = db.Column(db.SmallInteger, default=ROLE_JOBHUNTER)
+    company = db.relationship('Company')
 
     def __repr__(self):
         return '<User:{}>'.format(self.username)
@@ -66,6 +67,10 @@ class Company(Base):
     url = db.Column(db.String(128), default="https://pic.baike.soso.com/ugc/baikepic2/18723/20180202144851-1145158508_jpg_462_344_6048.jpg/0")
     address = db.Column(db.String(64), nullable=False)
     jobs = db.relationship('Job')
+
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"))
+    user = db.relationship('User')
 
     def __repr__(self):
         return '<Company:{}>'.format(self.name)
