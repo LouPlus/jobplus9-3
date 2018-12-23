@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
+
     {% block head_css %}
     <link rel="stylesheet" href="http://labfile.oss.aliyuncs.com/courses/923/week7/code/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static',filename='main.css') }}">
     {% endblock %}
+
     {% block head_js %}
     {% endblock %}
 </head>
