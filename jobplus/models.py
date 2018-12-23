@@ -68,6 +68,7 @@ class Company(Base):
     address = db.Column(db.String(64), nullable=False)
     jobs = db.relationship('Job')
 
+
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"))
     user = db.relationship('User')
 
@@ -94,7 +95,7 @@ class Jtag(db.Model):
     name = db.Column(db.String(20), unique=True, index=True, nullable=False)
 
     def __repr__(self):
-        return '<Jtag:{}>'.format(self.name)
+        return '{}'.format(self.name)
 
 
 
@@ -106,7 +107,7 @@ class Jcity(db.Model):
     name = db.Column(db.String(20), unique=True, index=True, nullable=False)
 
     def __repr__(self):
-        return '<Jcity:{}>'.format(self.name)
+        return '{}'.format(self.name)
 
 
 
@@ -146,7 +147,4 @@ class Job(Base):
         return "<Job:{}>".format(self.name)
 
 
-######  query_factory #######
 
-def get_salary_range():
-    return Salary_Range
