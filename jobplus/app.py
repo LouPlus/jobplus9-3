@@ -22,9 +22,10 @@ def register_extentions(app):
     login_manager.login_view = 'front.login'
 
 def register_blueprints(app):
-    from .handlers import front, job
+    from .handlers import front, job, company
     app.register_blueprint(front)
     app.register_blueprint(job)
+    app.register_blueprint(company)
 
 def create_app(config):
     app = Flask(__name__)
