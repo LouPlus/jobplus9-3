@@ -34,18 +34,22 @@ def profile():
     return render_template('company/profile.html', form = form)
 
 
-@company.route('/addjob', methods=['POST', 'GET'])
+@company.route('/<int:cid>/addjob', methods=['POST', 'GET'])
 def addjob(cid):
-    return 'add job'
+    return redirect(url_for('job.addjob', cid=cid))
 
-@company.route('/<int:cid>/rmjob')
-def rmjob(cid):
-    return 'delete job'
+@company.route('/<int:cid>/<int:jobid>/rmjob')
+def rmjob(cid, jobid):
+    return redirect(url_for('job.rmjob', cid=cid, jobid=jobid))
 
-@company.route('/<int:cid>/updatejob')
-def updatejob(cid):
-    return 'update job'
+@company.route('/<int:cid>/<int:jobid>/updatejob', methods=['POST', 'GET'])
+def updatejob(cid, jobid):
+    return redirect(url_for('job.updatejob', cid=cid, jobid=jobid))
 
-@company.route('/<int:cid>')
-def showjob(cid):
-    return 'detail job'
+@company.route('/job/<int:jobid>')
+def showjob(jobid):
+    return redirect(url_for('job.detail', jobid=jobid))
+
+@company.route('/admin')
+def admin():
+    return render_template('company/admin.html')

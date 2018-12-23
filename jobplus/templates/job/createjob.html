@@ -7,7 +7,7 @@
 {% block body %}
 
 <div class="form">
-    {{ render_form(form, url_for('job.addjob'),'') }}
+    {{ render_form(form, url_for('job.addjob', cid=cid),'') }}
 </div>
 
 {% endblock %}
