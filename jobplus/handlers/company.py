@@ -1,9 +1,10 @@
 
 
 
-from flask import Blueprint, render_template, request, current_app
+from flask import Blueprint, redirect, url_for, render_template, request, current_app
 from jobplus.models import Company
-
+from jobplus.forms import CompanyProfileForm
+from jobplus.decorators import company_required
 
 
 
@@ -23,9 +24,14 @@ def index():
 
     return render_template('company/index.html', pagination=pagination)
 
-
-
-
+@company.route('/profile', methods=['GET', 'POST'])
+@company_required
+def profile():
+    form = CompanyProfileForm()
+    if form.validate_on_submit():
+        form.update_company()
+        return redirect(url_for('front.index'))
+    return render_template('company/profile.html', form = form)
 
 
 @company.route('/addjob', methods=['POST', 'GET'])
@@ -43,6 +49,3 @@ def updatejob(cid):
 @company.route('/<int:cid>')
 def showjob(cid):
     return 'detail job'
-
-
-
