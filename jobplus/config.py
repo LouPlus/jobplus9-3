@@ -7,7 +7,8 @@ class BaseConfig:
 class DevelopmentConfig(BaseConfig):
     """ 开发环境配置 """
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = "mysql://root:root@localhost:3306/jobplus?charset=utf8"
+    SQLALCHEMY_DATABASE_URI = "mysql://root@localhost:3306/jobplus?charset=utf8"
+    #SQLALCHEMY_DATABASE_URI = "mysql://root:root@localhost:3306/jobplus?charset=utf8"
 
 class ProductionConfig(BaseConfig):
     """ 生产环境配置 """
@@ -26,4 +27,3 @@ configs = {
     'testing' : TestingConfig,
     'esun127' : Esun127Config,
 }
-    
