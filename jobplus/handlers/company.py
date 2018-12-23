@@ -1,9 +1,14 @@
+
+
+
 from flask import Blueprint, render_template, request, current_app
 from jobplus.models import Company
 
 
 
+
 company = Blueprint('company', __name__, url_prefix='/company')
+
 
 
 @company.route('/')
@@ -38,5 +43,6 @@ def updatejob(cid):
 @company.route('/<int:cid>')
 def showjob(cid):
     return 'detail job'
+
 
 
