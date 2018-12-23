@@ -7,9 +7,6 @@ from jobplus.models import db, User, Job
 from jobplus.models import Jtag, Jcity, Salary_Range
 
 from wtforms.ext.sqlalchemy.orm import model_form
-
-
-
 import re
 
 class RegisterForm(FlaskForm):
@@ -101,10 +98,10 @@ class AddCityForm(TagForm):
 
 
 class AddSalaryForm(TagForm):
-    salary_submit  = SubmitField('提交')
+    salary_submit = SubmitField('提交')
 
     def validate_name(self, field):
-        reg = re.compile(r'((\d+)--(\d+))')
+        reg = re.compile(r'(\d+)--(\d+)')
         if not reg.match(field.data):
             raise ValidationError('请输入<数值>--<数值>')
 
@@ -137,19 +134,7 @@ JobForm = model_form(Job,
 
 
 
-JobForm = model_form(Job,
-                     db_session=db.session, base_class=FlaskForm,
-                     only=['name','requirements', 'tags', 'cities', 'salary_range', 'company'],
-                     field_args =
-                     {
-                        'name': { 'label':'岗位名称', 'validators':[DataRequired(), Length(1, 32)]},
-                        'requirements': {'label':'职位要求'},
-                         'tags': {'label':'关键字'},
-                         'cities': {'label':'工作城市'},
-                         'salary_range': {'label':'薪资范围'},
-                         'company': {'label':'公司'}
-                        },
-                     )
+
 
 class AddJobForm(JobForm):
 
