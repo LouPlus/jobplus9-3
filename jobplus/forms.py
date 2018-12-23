@@ -1,9 +1,10 @@
 from flask_wtf import FlaskForm
+from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms import SelectMultipleField, SelectField, TextAreaField
-from wtforms.validators import DataRequired,Email,Length,EqualTo,ValidationError
+from wtforms.validators import DataRequired,Email,Length,EqualTo,ValidationError, URL
 
-from jobplus.models import db, User, Job
+from jobplus.models import db, User, Job , Company
 from jobplus.models import Jtag, Jcity, Salary_Range
 
 from wtforms.ext.sqlalchemy.orm import model_form
@@ -40,7 +41,7 @@ class LoginForm(FlaskForm):
     email = StringField('邮箱', validators=[DataRequired(), Email()])
     password = PasswordField('密码', validators=[DataRequired(), Length(6, 24)])
     remember_me = BooleanField('记住我')
-    submit = SubmitField('提交') 
+    submit = SubmitField('提交')
 
     def validate_email(self, field):
         if field.data and not User.query.filter_by(email=field.data).first():
@@ -51,10 +52,31 @@ class LoginForm(FlaskForm):
         if user and not user.check_password(field.data):
             raise ValidationError('密码错误')
 
+class CompanyProfileForm(FlaskForm):
+    name = StringField("Company name", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    phone_number = StringField("Phone number", validators=[DataRequired(), Length(11)])
+    address = StringField("Address", validators=[DataRequired()])
+    website = StringField("Website address", validators=[DataRequired()])
+    logo = StringField("Image url", validators=[DataRequired()])
+    description = StringField("Description", validators=[DataRequired()])
+    info = StringField("Company info", validators=[DataRequired()])
+    submit = SubmitField("Submit")
 
+    def update_company(self):
+        company = Company(name = self.name.data,
+        address = self.address.data,
+        website = self.website.data,
+        url = self.logo.data,
+        description = self.description.data,
+        user_id = current_user.id
+        )
+        db.session.add(company)
+        db.session.commit()
+        return company
 
 class TagForm(FlaskForm):
-    
+
     name = StringField('名称', validators=[DataRequired(), Length(1,20)])
 
 
@@ -175,7 +197,3 @@ class AddJobForm(JobForm):
         self.populate_obj(job)   # 从表单中获取最新数据并填充到对象job
         db.session.add(job)
         db.session.commit()
-
-
-
-

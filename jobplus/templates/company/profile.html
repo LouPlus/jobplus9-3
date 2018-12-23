@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+{% from "macros.html" import render_form %}
+{% block title %}Company Profile{% endblock %}
+{% block body %}
+<div class="form">
+    {{ render_form(form,url_for('company.profile'),'') }}
+</div>
+
+{% endblock %}
+<!-- {% block tail_js %}
+{{ super() }}
+<script>
+    $('#login').addClass('active');
+</script>
+{% endblock %} -->
