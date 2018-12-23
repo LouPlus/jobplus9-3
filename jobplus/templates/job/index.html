@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 {% from "macros.html" import render_pagination %}
 
+
+{% block head_css %}
+{{super()}}
+{% endblock %}
+
 {% block title %}职位列表{% endblock %}
+
+
 
 {% block head_js %}
          {{ moment.include_jquery() }}
