@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% from "macros.html" import render_pagination %}
 
+{% block title %}职位列表{% endblock %}
 
 {% block head_js %}
          {{ moment.include_jquery() }}
@@ -56,4 +57,10 @@
 {% endfor %}
 
 {{ render_pagination(pagination, 'job.index') }}
+{% endblock %}
+{% block tail_js %}
+{{ super() }}
+<script>
+    $('#jobs').addClass('active');
+</script>
 {% endblock %}

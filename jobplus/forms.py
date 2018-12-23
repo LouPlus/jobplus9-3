@@ -1,7 +1,16 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import SelectMultipleField, SelectField, TextAreaField
 from wtforms.validators import DataRequired,Email,Length,EqualTo,ValidationError
-from jobplus.models import db, User
+
+from jobplus.models import db, User, Job
+from jobplus.models import Jtag, Jcity, Salary_Range
+
+from wtforms.ext.sqlalchemy.orm import model_form
+
+
+
+import re
 
 class RegisterForm(FlaskForm):
     username = StringField('用户名',validators=[DataRequired(),Length(1,24)])
@@ -29,6 +38,7 @@ class RegisterForm(FlaskForm):
         db.session.commit()
         return user
 
+
 class LoginForm(FlaskForm):
     email = StringField('邮箱', validators=[DataRequired(), Email()])
     password = PasswordField('密码', validators=[DataRequired(), Length(6, 24)])
@@ -43,3 +53,144 @@ class LoginForm(FlaskForm):
         user = User.query.filter_by(email=self.email.data).first()
         if user and not user.check_password(field.data):
             raise ValidationError('密码错误')
+
+
+
+class TagForm(FlaskForm):
+    
+    name = StringField('名称', validators=[DataRequired(), Length(1,20)])
+
+
+    def updatetag(self, tag):
+        self.populate_obj(tag)
+        db.session.add(tag)
+        db.session.commit()
+
+
+
+
+class AddTagForm(TagForm):
+    tag_submit = SubmitField('提交')
+
+    def validate_name(self, field):
+        if Jtag.query.filter_by(name=field.data).first():
+            raise ValidationError('标签已经存在.')
+
+    def addtag(self):
+        tag = Jtag(name=self.name.data)
+        db.session.add(tag)
+        db.session.commit()
+
+
+
+
+class AddCityForm(TagForm):
+    city_submit = SubmitField('提交')
+
+    def validate_name(self, field):
+        if Jcity.query.filter_by(name=field.data).first():
+            raise ValidationError('城市已经存在.')
+
+
+    def addtag(self):
+        tag = Jcity(name=self.name.data)
+        db.session.add(tag)
+        db.session.commit()
+
+
+
+
+class AddSalaryForm(TagForm):
+    salary_submit  = SubmitField('提交')
+
+    def validate_name(self, field):
+        reg = re.compile(r'((\d+)--(\d+))')
+        if not reg.match(field.data):
+            raise ValidationError('请输入<数值>--<数值>')
+
+        if Salary_Range.query.filter_by(name=field.data).first():
+            raise ValidationError('薪资范围已经存在.')
+
+
+    def addtag(self):
+        tag = Salary_Range(name=self.name.data)
+        db.session.add(tag)
+        db.session.commit()
+
+
+
+
+JobForm = model_form(Job,
+                     db_session=db.session, base_class=FlaskForm,
+                     only=['name','requirements', 'tags', 'cities', 'salary_range', 'company'],
+                     field_args =
+                     {
+                        'name': { 'label':'岗位名称', 'validators':[DataRequired(), Length(1, 32)]},
+                        'requirements': {'label':'职位要求'},
+                         'tags': {'label':'关键字'},
+                         'cities': {'label':'工作城市'},
+                         'salary_range': {'label':'薪资范围'},
+                         'company': {'label':'公司'}
+                        },
+                     )
+
+
+
+
+JobForm = model_form(Job,
+                     db_session=db.session, base_class=FlaskForm,
+                     only=['name','requirements', 'tags', 'cities', 'salary_range', 'company'],
+                     field_args =
+                     {
+                        'name': { 'label':'岗位名称', 'validators':[DataRequired(), Length(1, 32)]},
+                        'requirements': {'label':'职位要求'},
+                         'tags': {'label':'关键字'},
+                         'cities': {'label':'工作城市'},
+                         'salary_range': {'label':'薪资范围'},
+                         'company': {'label':'公司'}
+                        },
+                     )
+
+class AddJobForm(JobForm):
+
+
+    submit = SubmitField('提交')
+
+    def addjob(self):
+        job = Job(name=self.name.data,
+                  requirements=self.requirements.data,
+                  salary_range=self.salary_range.data,
+                  company=self.company.data,
+                  tags=self.tags.data,
+                  cities=self.cities.data)
+        db.session.add(job)
+        db.session.commit()
+
+    def updatejob(self, job):
+        self.populate_obj(job)   # 从表单中获取最新数据并填充到对象job
+        db.session.add(job)
+        db.session.commit()
+
+
+class AddJobForm(JobForm):
+
+    submit = SubmitField('提交')
+
+    def addjob(self):
+        job = Job(name=self.name.data,
+                  requirements=self.requirements.data,
+                  salary_range=self.salary_range.data,
+                  company=self.company.data,
+                  tags=self.tags.data,
+                  cities=self.cities.data)
+        db.session.add(job)
+        db.session.commit()
+
+    def updatejob(self, job):
+        self.populate_obj(job)   # 从表单中获取最新数据并填充到对象job
+        db.session.add(job)
+        db.session.commit()
+
+
+
+

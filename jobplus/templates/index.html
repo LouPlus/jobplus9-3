@@ -54,3 +54,9 @@
     <a href="#" class="btn btn-default btn-lg" role="button">查看更多</a>
 </div>
 {% endblock %}
+{% block tail_js %}
+{{ super() }}
+<script>
+    $('#homepage').addClass('active');
+</script>
+{% endblock %}

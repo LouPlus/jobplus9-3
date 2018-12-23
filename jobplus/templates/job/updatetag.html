@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% from "macros.html" import render_form %}
+{% block title %}修改职位标签|城市|薪资范围{% endblock %}
+
+{% block body %}
+{% if tagform %}
+<h4>修改职位标签</h4>
+<div class="form">
+    {{ render_form(tagform, url,'') }}
+</div>
+<hr>
+{% endif %}
+
+{% if cityform %}
+<h4>修改工作城市</h4>
+<div class="form">
+        {{ render_form(cityform, url,'') }}
+</div>
+<hr>
+{% endif %}
+
+{% if salaryform %}
+<h4>修改薪资范围</h4>
+<div class="form">
+    {{ render_form(salaryform, url,'') }}
+</div>
+{% endif %}
+
+
+
+{% endblock %}

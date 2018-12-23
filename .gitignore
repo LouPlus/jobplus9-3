@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+*.swp
+
+
 # C extensions
 *.so
 
@@ -113,3 +116,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+
+# pycharm env
+.idea/
+.idea/*
+
