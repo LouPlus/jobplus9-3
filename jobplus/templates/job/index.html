@@ -28,7 +28,10 @@
         <div class="job-box">
             <div class="caption">
                 <a href="/job/{{job.id}}">
-                    <b>{{ job.name }}</b> <span class="timesince">[ 发布于{{ moment().fromTime(job.updated_at, refresh=True) }} ]</span>
+                    <b>{{ job.name }}</b>
+                        <span class="timesince">
+                            [ 发布于{{ moment().fromTime(job.updated_at, refresh=True) }} ]
+                        </span>
                     <p>{{ job.requirement }}</p>
         
                     <strong class="text-green">{{ job.salary_range }}</strong><br/>

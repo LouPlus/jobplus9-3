@@ -178,7 +178,11 @@ def rmjob(jobid):
 
 
 
-
+# 职位详情页面
+@job.route('/<int:jobid>')
+def jobdetail(jobid):
+    job = Job.query.get_or_404(jobid)
+    return render_template('job/detail.html', job=job)
 
 
 
