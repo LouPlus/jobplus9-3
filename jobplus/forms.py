@@ -52,16 +52,18 @@ class LoginForm(FlaskForm):
         if user and not user.check_password(field.data):
             raise ValidationError('密码错误')
 
+
 class CompanyProfileForm(FlaskForm):
-    name = StringField("Company name", validators=[DataRequired()])
-    email = StringField("Email", validators=[DataRequired(), Email()])
-    phone_number = StringField("Phone number", validators=[DataRequired(), Length(11)])
-    address = StringField("Address", validators=[DataRequired()])
-    website = StringField("Website address", validators=[DataRequired()])
-    logo = StringField("Image url", validators=[DataRequired()])
-    description = StringField("Description", validators=[DataRequired()])
-    info = StringField("Company info", validators=[DataRequired()])
-    submit = SubmitField("Submit")
+    name = StringField("公司名称", validators=[DataRequired()])
+    email = StringField("邮箱地址", validators=[DataRequired(), Email()])
+    phone_number = StringField("公司电话", validators=[DataRequired(), Length(11)])
+    address = StringField("公司地址", validators=[DataRequired()])
+    website = StringField("公司官网", validators=[DataRequired()])
+    logo = StringField("公司LOGO", validators=[DataRequired()])
+    description = StringField("公司描述", validators=[DataRequired()])
+    info = StringField("公司信息", validators=[DataRequired()])
+    submit = SubmitField("提交")
+
 
     def update_company(self):
         company = Company(name = self.name.data,
@@ -179,21 +181,3 @@ class AddJobForm(JobForm):
         db.session.commit()
 
 
-class AddJobForm(JobForm):
-
-    submit = SubmitField('提交')
-
-    def addjob(self):
-        job = Job(name=self.name.data,
-                  requirements=self.requirements.data,
-                  salary_range=self.salary_range.data,
-                  company=self.company.data,
-                  tags=self.tags.data,
-                  cities=self.cities.data)
-        db.session.add(job)
-        db.session.commit()
-
-    def updatejob(self, job):
-        self.populate_obj(job)   # 从表单中获取最新数据并填充到对象job
-        db.session.add(job)
-        db.session.commit()
