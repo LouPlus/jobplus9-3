@@ -3,20 +3,26 @@
 {% block title %}添加职位标签|城市|薪资范围{% endblock %}
 
 {% block body %}
+<ul class="nav nav-tabs list-title">
+  <li role="presentation" class="active"><a href="#">添加职位标签</a></li>
+</ul>
 
-<h4>添加职位标签</h4>
 <div class="form">
     {{ render_form(tagform, url_for('job.addtag'),'') }}
 </div>
-<hr>
 
-<h4>添加工作城市</h4>
+<ul class="nav nav-tabs list-title">
+  <li role="presentation" class="active"><a href="#">添加工作城市</a></li>
+</ul>
+
 <div class="form">
         {{ render_form(cityform, url_for('job.addtag'),'') }}
 </div>
-<hr>
 
-<h4>添加薪资范围</h4>
+<ul class="nav nav-tabs list-title">
+  <li role="presentation" class="active"><a href="#">添加薪资范围</a></li>
+</ul>
+
 <div class="form">
     {{ render_form(salaryform, url_for('job.addtag'),'') }}
 </div>

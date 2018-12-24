@@ -52,27 +52,14 @@
                     <li id='homepage'><a href="{{ url_for('front.index') }}">首页</a></li>
                     <li id='jobs'><a href="{{ url_for('job.index') }}">职位<span class="sr-only">(current)</span></a></li>
                     <li id='companies'><a href="{{ url_for('company.index') }}">公司</a></li>
+                    {% if current_user.is_authenticated and current_user.is_company  %}
+                    <li><a href="{{ url_for('company.admin') }}">管理</a></li>
+                    {% endif %}
 
 
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                  {% if current_user.is_authenticated and current_user.is_company  %}
-                  <!--临时增加职业标签/薪资/城市的入口-->
-                  <li class="dropdown">
-                      <a href="{{ url_for('job.addjob') }}" class="dropdown-toggle"
 
-                         data-toggle="dropdown">职位管理<b class="caret"></b>
-                      </a>
-                          <ul class="dropdown-menu">
-                              <li><a href="{{ url_for('job.addjob') }}">增加职位</a></li>
-                              <li><a href="{{ url_for('job.addtag') }}">增加职位属性</a></li>
-                              <li><a href="{{ url_for('job.rmtag') }}">删除职位属性</a></li>
-                              <li><a href="{{ url_for('job.updatetag') }}">修改职位属性</a></li>
-
-                          </ul>
-                  </li>
-                  {% endif %}
-                  <!--临时增加职业标签/薪资/城市的入口结束-->
                     {% if not current_user.is_authenticated %}
 
 

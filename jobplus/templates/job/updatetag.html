@@ -4,23 +4,27 @@
 
 {% block body %}
 {% if tagform %}
-<h4>修改职位标签</h4>
+<ul class="nav nav-tabs list-title">
+  <li role="presentation" class="active"><a href="#">修改职位标签</a></li>
+</ul>
 <div class="form">
     {{ render_form(tagform, url,'') }}
 </div>
-<hr>
 {% endif %}
 
 {% if cityform %}
-<h4>修改工作城市</h4>
+<ul class="nav nav-tabs list-title">
+  <li role="presentation" class="active"><a href="#">修改工作城市</a></li>
+</ul>
 <div class="form">
         {{ render_form(cityform, url,'') }}
 </div>
-<hr>
 {% endif %}
 
 {% if salaryform %}
-<h4>修改薪资范围</h4>
+<ul class="nav nav-tabs list-title">
+  <li role="presentation" class="active"><a href="#">修改薪资范围</a></li>
+</ul>
 <div class="form">
     {{ render_form(salaryform, url,'') }}
 </div>
