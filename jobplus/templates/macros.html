@@ -34,16 +34,16 @@
     </div>
 </div>
 {% endmacro %}
-{% macro company_item() %}
+{% macro company_item(company) %}
 <div class="col-sm-6 col-md-3">
     <div class="thumbnail">
         <div class="company">
-            <img src="https://static.lagou.com/thumbnail_300x300/i/image/M00/3E/22/CgqKkVdzobeAB7eoAAIUnE7Fe1M567.png"
+            <img src="{{ company.url }}"
                 alt="...">
-            <h3>实验楼</h3>
+            <h3>{{ company.name }}</h3>
         </div>
         <hr>
-        <p class="job-num">在招职位：0</p>
+        <p class="job-num">在招职位：{{ company.jobs | length }}</p>
     </div>
 </div>
 {% endmacro %}
