@@ -1,11 +1,8 @@
 from flask import Blueprint, render_template, request, current_app, flash, abort
 from flask import url_for, redirect
 
-from jobplus.models import db, Job, Jtag, Jcity, Salary_Range
+from jobplus.models import db, Job, Jtag, Jcity, Salary_Range, Company
 from jobplus.forms import AddCityForm, AddTagForm, AddSalaryForm, AddJobForm
-
-
-
 
 
 job = Blueprint('job', __name__, url_prefix='/job')
@@ -43,9 +40,6 @@ def addtag():
             cityform.addtag()
             flash('城市添加成功', 'success')
         return redirect(url_for('.addtag'))
-
-
-
 
 
     if salaryform.salary_submit.data:
@@ -145,36 +139,37 @@ def updatetag():
 
 
 
-@job.route('/createjob', methods=['GET', 'POST'])
-def addjob():
+@job.route('/<int:cid>/createjob', methods=['GET', 'POST'])
+def addjob(cid):
+    company = Company.query.get_or_404(cid)
     form = AddJobForm()
     if form.validate_on_submit():
-        form.addjob()
+        form.addjob(company)
         flash('职位添加成功', 'success')
-        return redirect(url_for('.index'))
+        return redirect(url_for('company.admin'))
 
-    return render_template('job/createjob.html', form=form)
+    return render_template('job/createjob.html', form=form, cid=cid)
 
 
-@job.route('/<int:jobid>/updatejob', methods=['GET', 'POST'])
-def updatejob(jobid):
+@job.route('/<int:cid>/<int:jobid>/updatejob', methods=['GET', 'POST'])
+def updatejob(cid, jobid):
+    company = Company.query.get_or_404(cid)
     job = Job.query.get_or_404(jobid)
     form = AddJobForm(obj=job)  # 用表对象填充表单模型对象
     if form.validate_on_submit():
-        form.updatejob(job)
+        form.updatejob(company, job)
         flash('职位更新成功', 'success')
-        return redirect(url_for('.index'))
-    return render_template('job/updatejob.html', form=form, job=job)
+        return redirect(url_for('company.admin'))
+    return render_template('job/updatejob.html', form=form, cid=cid, job=job)
 
 
-@job.route('/<int:jobid>/deljob')
-def rmjob(jobid):
+@job.route('/<int:cid>/<int:jobid>/deljob')
+def rmjob(cid, jobid):
     job = Job.query.get_or_404(jobid)
-    if job:
-        db.session.delete(job)
-        db.session.commit()
-        flash('职位删除成功', 'success')
-    return redirect(url_for('.index'))
+    db.session.delete(job)
+    db.session.commit()
+    flash('职位删除成功', 'success')
+    return redirect(url_for('company.admin'))
 
 
 

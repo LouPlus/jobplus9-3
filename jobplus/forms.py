@@ -1,7 +1,5 @@
 from flask_wtf import FlaskForm
-from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms import SelectMultipleField, SelectField, TextAreaField
 from wtforms.validators import DataRequired,Email,Length,EqualTo,ValidationError, URL
 
 from jobplus.models import db, User, Job , Company
@@ -64,14 +62,13 @@ class CompanyProfileForm(FlaskForm):
     info = StringField("公司信息", validators=[DataRequired()])
     submit = SubmitField("提交")
 
-
-    def update_company(self):
+    def update_company(self, user):
         company = Company(name = self.name.data,
         address = self.address.data,
         website = self.website.data,
         url = self.logo.data,
         description = self.description.data,
-        user_id = current_user.id
+        user = user
         )
         db.session.add(company)
         db.session.commit()
@@ -143,40 +140,43 @@ class AddSalaryForm(TagForm):
 
 JobForm = model_form(Job,
                      db_session=db.session, base_class=FlaskForm,
-                     only=['name','requirements', 'tags', 'cities', 'salary_range', 'company'],
+                     only=['name','requirements', 'tags', 'cities', 'salary_range',
+                           'description', 'edulevel', 'experlevel'],
                      field_args =
                      {
-                        'name': { 'label':'岗位名称', 'validators':[DataRequired(), Length(1, 32)]},
-                        'requirements': {'label':'职位要求'},
-                         'tags': {'label':'关键字'},
+                        'name': { 'label':'职位名称', 'validators':[DataRequired(), Length(1, 32)]},
+                        'requirements': {'label':'具体要求'},
+                         'tags': {'label':'职位标签'},
                          'cities': {'label':'工作城市'},
                          'salary_range': {'label':'薪资范围'},
-                         'company': {'label':'公司'}
+                         'description': {'label':'职位介绍'},
+                         'edulevel': {'label':'学历要求'},
+                         'experlevel': {'label':'经验要求'}
                         },
                      )
-
-
-
-
-
 
 class AddJobForm(JobForm):
 
 
     submit = SubmitField('提交')
 
-    def addjob(self):
+    def addjob(self, company):
         job = Job(name=self.name.data,
                   requirements=self.requirements.data,
                   salary_range=self.salary_range.data,
-                  company=self.company.data,
+                  description=self.description.data,
+                  edulevel=self.edulevel.data,
+                  experlevel=self.experlevel.data,
                   tags=self.tags.data,
                   cities=self.cities.data)
+        job.company = company
+
         db.session.add(job)
         db.session.commit()
 
-    def updatejob(self, job):
+    def updatejob(self, company, job):
         self.populate_obj(job)   # 从表单中获取最新数据并填充到对象job
+        job.company = company
         db.session.add(job)
         db.session.commit()
 
