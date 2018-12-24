@@ -41,14 +41,9 @@
     <li role="presentation" class="active"><a href="#">最新公司</a></li>
 </ul>
 <div class="row">
-    {{ company_item() }}
-    {{ company_item() }}
-    {{ company_item() }}
-    {{ company_item() }}
-    {{ company_item() }}
-    {{ company_item() }}
-    {{ company_item() }}
-    {{ company_item() }}
+    {% for company in companies %}
+        {{ company_item(company) }}
+    {% endfor %}
 </div>
 <div class="more">
     <a href="#" class="btn btn-default btn-lg" role="button">查看更多</a>
