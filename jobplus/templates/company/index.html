@@ -1,1 +1,43 @@
 {% extends "base.html" %}
+{% from "macros.html" import render_pagination %}
+
+{% block head_css %}
+{{ super() }}
+{% endblock %}
+
+
+{% block title %}公司列表{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid header">
+
+</div>
+
+<div class="container">
+
+    <div class="jumbotron">
+        <h1>Todo: 公司过滤</h1>
+    </div>
+    <div class="company-list">
+
+    {% for company in pagination.items %}
+        <div class="col-sm-6 col-md-3 company-item">
+            <div class="thumbnail">
+                <a href="#">
+                    <img src="{{ company.url }}" width="100" height="100" alt="...">
+                    <h3>{{ company.name }}</h3>
+                    <p>None</p>
+                </a>
+                <hr>
+                <a href="#">
+                    <p>在招职位：{{ company.jobs | count }}</p>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+
+
+    </div>
+    {{ render_pagination(pagination) }}
+{% endblock %}
