@@ -22,7 +22,7 @@ class User(Base, UserMixin):
     email = db.Column(db.String(64), unique=True, index=True, nullable=False)
     _password = db.Column('password', db.String(256), nullable=False)
     role = db.Column(db.SmallInteger, default=ROLE_JOBHUNTER)
-    company = db.relationship('Company')
+    company = db.relationship('Company', uselist=False)
 
     def __repr__(self):
         return '<User:{}>'.format(self.username)
@@ -50,6 +50,14 @@ class User(Base, UserMixin):
     def is_admin(self):
         return self.role == self.ROLE_ADMIN
 
+    def get_id(self):
+        return self.id
+
+
+    def get_company(self):
+        return self.company
+
+
 
 
 
@@ -64,13 +72,14 @@ class Company(Base):
     # 公司详细介绍
     description = db.Column(db.String(512))
     # Logo图片 url 地址
-    url = db.Column(db.String(128), default="https://pic.baike.soso.com/ugc/baikepic2/18723/20180202144851-1145158508_jpg_462_344_6048.jpg/0")
+    url = db.Column(db.String(128),
+                    default="https://pic.baike.soso.com/ugc/baikepic2/18723/20180202144851-1145158508_jpg_462_344_6048.jpg/0")
     address = db.Column(db.String(64), nullable=False)
     jobs = db.relationship('Job')
 
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"))
-    user = db.relationship('User')
+    user = db.relationship('User', uselist=False)
 
     def __repr__(self):
         return '<Company:{}>'.format(self.name)
@@ -133,7 +142,11 @@ class Job(Base):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(32), nullable=False)
-    requirements = db.Column(db.String(1024))
+
+    description = db.Column(db.Text(512))
+    edulevel = db.Column(db.Enum('不限','初中','高中','技校','大专','本科','研究生','硕士','博士'), default='不限')
+    experlevel = db.Column(db.Enum('不限','1年','2年','3年','1-3年','3-5年','5年以上'), default='不限')
+    requirements = db.Column(db.Text(1024))
     company_id = db.Column(db.Integer, db.ForeignKey('company.id', ondelete="CASCADE"))
     salary_range_id = db.Column(db.Integer, db.ForeignKey('salary_range.id',ondelete="SET NULL"))
     salary_range = db.relationship('Salary_Range', uselist=False)
@@ -144,7 +157,7 @@ class Job(Base):
 
 
     def __repr__(self):
-        return "<Job:{}>".format(self.name)
+        return "{}".format(self.name)
 
 
 
