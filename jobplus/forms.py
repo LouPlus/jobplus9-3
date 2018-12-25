@@ -1,5 +1,4 @@
 from flask_wtf import FlaskForm
-from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired,Email,Length,EqualTo,ValidationError, URL
 
@@ -63,17 +62,13 @@ class CompanyProfileForm(FlaskForm):
     info = StringField("公司信息", validators=[DataRequired()])
     submit = SubmitField("提交")
 
-
-
-
-
-    def update_company(self):
+    def update_company(self, user):
         company = Company(name = self.name.data,
         address = self.address.data,
         website = self.website.data,
         url = self.logo.data,
         description = self.description.data,
-        user_id = current_user.id
+        user = user
         )
         db.session.add(company)
         db.session.commit()
@@ -145,7 +140,9 @@ class AddSalaryForm(TagForm):
 
 JobForm = model_form(Job,
                      db_session=db.session, base_class=FlaskForm,
-                     only=['name','requirements', 'tags', 'cities', 'salary_range', 'description'],
+
+                     only=['name','requirements', 'tags', 'cities', 'salary_range',
+                           'description', 'edulevel', 'experlevel'],
                      field_args =
                      {
                         'name': { 'label':'职位名称', 'validators':[DataRequired(), Length(1, 32)]},
@@ -159,11 +156,6 @@ JobForm = model_form(Job,
                         },
                      )
 
-
-
-
-
-
 class AddJobForm(JobForm):
 
 
@@ -175,10 +167,11 @@ class AddJobForm(JobForm):
                   salary_range=self.salary_range.data,
                   description=self.description.data,
                   edulevel=self.edulevel.data,
-                  experlevel=self.experlevel,
+                  experlevel=self.experlevel.data,
                   tags=self.tags.data,
                   cities=self.cities.data)
         job.company = company
+
         db.session.add(job)
         db.session.commit()
 

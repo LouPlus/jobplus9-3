@@ -17,3 +17,5 @@ def role_required(role):
 user_required = role_required(User.ROLE_JOBHUNTER)
 company_required = role_required(User.ROLE_COMPANY)
 admin_required = role_required(User.ROLE_ADMIN)
+
+
