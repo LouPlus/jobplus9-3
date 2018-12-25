@@ -140,6 +140,7 @@ class AddSalaryForm(TagForm):
 
 JobForm = model_form(Job,
                      db_session=db.session, base_class=FlaskForm,
+
                      only=['name','requirements', 'tags', 'cities', 'salary_range',
                            'description', 'edulevel', 'experlevel'],
                      field_args =
