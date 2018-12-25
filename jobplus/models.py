@@ -59,6 +59,7 @@ class User(Base, UserMixin):
         return self.company
 
 
+
 class HunterProfile(Base):
     __tablename__ = 'hunter_profile'
 
@@ -89,10 +90,6 @@ class HunterProfile(Base):
 
     def set_password_fromuser(self, user):
         self._password = user.password
-
-
-
-
 
 
 
@@ -178,12 +175,9 @@ class Job(Base):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(32), nullable=False)
-
-
     description = db.Column(db.Text(512))
     edulevel = db.Column(db.Enum('不限','初中','高中','技校','大专','本科','研究生','硕士','博士'), default='不限')
     experlevel = db.Column(db.Enum('不限','1年','2年','3年','1-3年','3-5年','5年以上'), default='不限')
-
     requirements = db.Column(db.Text(1024))
     company_id = db.Column(db.Integer, db.ForeignKey('company.id', ondelete="CASCADE"))
     salary_range_id = db.Column(db.Integer, db.ForeignKey('salary_range.id',ondelete="SET NULL"))

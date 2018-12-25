@@ -163,7 +163,6 @@ def updatejob(cid, jobid):
         flash('职位更新成功', 'success')
 
         return redirect(url_for('company.admin'))
-
     return render_template('job/updatejob.html', form=form, cid=cid, job=job)
 
 
@@ -175,7 +174,6 @@ def rmjob(cid, jobid):
     flash('职位删除成功', 'success')
 
     return redirect(url_for('company.admin'))
-
 
 
 
