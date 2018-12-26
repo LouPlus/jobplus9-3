@@ -3,6 +3,8 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
+import os
+
 db = SQLAlchemy()
 
 class Base(db.Model):
@@ -68,6 +70,12 @@ class Resume(Base):
     path = db.Column(db.String(128))
     hunter_id = db.Column(db.Integer, db.ForeignKey('hunter_profile.id', ondelete="CASCADE"))
     hunter = db.relationship('HunterProfile', uselist=False)
+    name = db.Column('name', db.String(30))
+
+    def __repr__(self):
+        if not self.name:
+            return '{}'.format(os.path.basename(self.path))
+        return '{}'.format(self.name)
 
 
 # 求职者配置表
@@ -135,6 +143,7 @@ job_resume = db.Table('job_resume',
                     db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True))
 
 
+
 #  投递简历表模型
 class Job_Resume(db.Model):
     __tablename__ = 'job_resume'
@@ -144,6 +153,9 @@ class Job_Resume(db.Model):
     resume_id = db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True)
     jobs = db.relationship('Job')
     resumes = db.relationship('Resume')
+
+
+
 
 
 
@@ -224,5 +236,5 @@ class Job(Base):
 
 
 def get_resume():
-    return Resume.query.all()
+    return Resume.query
 
