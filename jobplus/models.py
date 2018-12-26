@@ -3,6 +3,8 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
+import os
+
 db = SQLAlchemy()
 
 class Base(db.Model):
@@ -51,14 +53,33 @@ class User(Base, UserMixin):
     def is_admin(self):
         return self.role == self.ROLE_ADMIN
 
+    @property
+    def is_hunter(self):
+        return self.role == self.ROLE_JOBHUNTER
+
     def get_id(self):
         return self.id
-
 
     def get_company(self):
         return self.company
 
+# 简历表
+class Resume(Base):
+    __tablename__ = 'resume'
+    id = db.Column(db.Integer, primary_key=True)
+    path = db.Column(db.String(128))
+    hunter_id = db.Column(db.Integer, db.ForeignKey('hunter_profile.id', ondelete="CASCADE"))
+    hunter = db.relationship('HunterProfile', uselist=False)
+    name = db.Column('name', db.String(30))
 
+    def __repr__(self):
+        if not self.name:
+            return '{}'.format(os.path.basename(self.path))
+        return '{}'.format(self.name)
+
+
+
+# 求职者配置表
 
 class HunterProfile(Base):
     __tablename__ = 'hunter_profile'
@@ -67,11 +88,11 @@ class HunterProfile(Base):
     name = db.Column(db.String(32), nullable=False)
     email = db.Column(db.String(64), index=True, unique=True, nullable=False)
     _password = db.Column('password', db.String(256))
-    phone_num = db.Column(db.String(11), index=True, unique=True, nullable=False)
-    work_age= db.Column(db.Enum('1年', '2年', '3年', '1-3年', '3-5年', '5年以上'), nullable=False)
-    resume_file = db.Column(db.String(128), default='NULL')
+    phone_num = db.Column(db.String(11))
+    work_age= db.Column(db.Enum('1年', '2年', '3年', '1-3年', '3-5年', '5年以上'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"))
     user = db.relationship('User', uselist=False)
+    resumes = db.relationship('Resume')
 
     @property
     def password(self):
@@ -87,7 +108,7 @@ class HunterProfile(Base):
         """ 判断用户输入的密码和存储的 hash 密码是否相等 """
         return check_password_hash(self._password, password)
 
-
+    # 从user表中设置取密码设置密码
     def set_password_fromuser(self, user):
         self._password = user.password
 
@@ -116,6 +137,28 @@ class Company(Base):
 
     def __repr__(self):
         return '<Company:{}>'.format(self.name)
+
+
+# 投递简历表
+job_resume = db.Table('job_resume',
+                    db.Column('job_id', db.Integer, db.ForeignKey('job.id'), primary_key=True),
+                    db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True))
+
+
+
+#  投递简历表模型
+class Job_Resume(db.Model):
+    __tablename__ = 'job_resume'
+    __table_args__ = {'extend_existing': True}   # 避免与上面的表定义发生元数据冲突
+
+    job_id = db.Column('job_id', db.Integer, db.ForeignKey('job.id'), primary_key=True)
+    resume_id = db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True)
+    jobs = db.relationship('Job')
+    resumes = db.relationship('Resume')
+
+
+
+
 
 
 job_tag = db.Table('job_tag',
@@ -167,9 +210,6 @@ class Salary_Range(db.Model):
 
     __str__ = __repr__
 
-
-
-
 class Job(Base):
     __tablename__ = "job"
 
@@ -178,6 +218,7 @@ class Job(Base):
     description = db.Column(db.Text(512))
     edulevel = db.Column(db.Enum('不限','初中','高中','技校','大专','本科','研究生','硕士','博士'), default='不限')
     experlevel = db.Column(db.Enum('不限','1年','2年','3年','1-3年','3-5年','5年以上'), default='不限')
+
     requirements = db.Column(db.Text(1024))
     company_id = db.Column(db.Integer, db.ForeignKey('company.id', ondelete="CASCADE"))
     salary_range_id = db.Column(db.Integer, db.ForeignKey('salary_range.id',ondelete="SET NULL"))
@@ -186,10 +227,16 @@ class Job(Base):
     # 增加反向引用,使得Job对象增加tags属性的同时, Jtag对象增加jobs属性
     tags = db.relationship('Jtag', secondary=job_tag, backref=db.backref('jobs'))
     cities = db.relationship('Jcity', secondary=job_city, backref=db.backref('jobs'))
+    #  关联简历表
+    resumes = db.relationship('Resume', secondary=job_resume, backref=db.backref('jobs'))
+
 
 
     def __repr__(self):
         return "{}".format(self.name)
 
 
+
+def get_resume():
+    return Resume.query
 
