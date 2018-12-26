@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-from jobplus.forms import RegisterForm, LoginForm, CompanyProfileForm
+
+from flask import Blueprint, render_template, redirect, url_for, flash
+from jobplus.forms import RegisterForm, LoginForm
+
 from jobplus.models import User, Job, Company
 from flask_login import login_user, logout_user
 
@@ -33,6 +35,10 @@ def company_register():
         return render_template('login.html', form=form1)
     return render_template('company_register.html',form=form)
 
+
+
+
+
 @front.route('/login', methods=['GET','POST'])
 def login():
     form = LoginForm()
@@ -41,8 +47,14 @@ def login():
         login_user(user,form.remember_me.data)
         if user.is_company:
             return redirect(url_for('company.profile'))
-        return redirect(url_for('.index'))
+        return redirect(url_for('hunter.profile'))
     return render_template('login.html',form=form)
+
+
+
+
+
+
 
 @front.route('/logout')
 def logout():

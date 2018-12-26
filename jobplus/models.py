@@ -23,6 +23,7 @@ class User(Base, UserMixin):
     _password = db.Column('password', db.String(256), nullable=False)
     role = db.Column(db.SmallInteger, default=ROLE_JOBHUNTER)
     company = db.relationship('Company', uselist=False)
+    profile = db.relationship('HunterProfile', uselist=False)
 
     def __repr__(self):
         return '<User:{}>'.format(self.username)
@@ -52,12 +53,41 @@ class User(Base, UserMixin):
 
     def get_id(self):
         return self.id
-
     def get_company(self):
         return self.company
 
 
 
+class HunterProfile(Base):
+    __tablename__ = 'hunter_profile'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32), nullable=False)
+    email = db.Column(db.String(64), index=True, unique=True, nullable=False)
+    _password = db.Column('password', db.String(256))
+    phone_num = db.Column(db.String(11), index=True, unique=True, nullable=False)
+    work_age= db.Column(db.Enum('1年', '2年', '3年', '1-3年', '3-5年', '5年以上'), nullable=False)
+    resume_file = db.Column(db.String(128), default='NULL')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"))
+    user = db.relationship('User', uselist=False)
+
+    @property
+    def password(self):
+        """Python 风格的 getter """
+        return self._password
+
+    @password.setter
+    def password(self, ori_password):
+        """ Python 风格的 setter, 这样设置 user.password 就会自动为 password 生成哈希制存入 _password 字段 """
+        self._password = generate_password_hash(ori_password)
+
+    def check_password(self, password):
+        """ 判断用户输入的密码和存储的 hash 密码是否相等 """
+        return check_password_hash(self._password, password)
+
+
+    def set_password_fromuser(self, user):
+        self._password = user.password
 
 
 class Company(Base):
@@ -138,10 +168,10 @@ class Job(Base):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(32), nullable=False)
-
     description = db.Column(db.Text(512))
     edulevel = db.Column(db.Enum('不限','初中','高中','技校','大专','本科','研究生','硕士','博士'), default='不限')
     experlevel = db.Column(db.Enum('不限','1年','2年','3年','1-3年','3-5年','5年以上'), default='不限')
+
     requirements = db.Column(db.Text(1024))
     company_id = db.Column(db.Integer, db.ForeignKey('company.id', ondelete="CASCADE"))
     salary_range_id = db.Column(db.Integer, db.ForeignKey('salary_range.id',ondelete="SET NULL"))

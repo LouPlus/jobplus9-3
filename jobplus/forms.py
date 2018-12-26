@@ -1,12 +1,22 @@
+from flask import url_for, current_app
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired,Email,Length,EqualTo,ValidationError, URL
 
-from jobplus.models import db, User, Job , Company
+from wtforms.fields import SelectField
+
+from wtforms.validators import DataRequired,Email,Length,EqualTo,ValidationError
+from flask_wtf.file import FileField, FileRequired
+
+from jobplus.models import db, User, Job , Company,  HunterProfile
 from jobplus.models import Jtag, Jcity, Salary_Range
 
+from werkzeug.utils import secure_filename
 from wtforms.ext.sqlalchemy.orm import model_form
 import re
+import os
+
+
+
 
 class RegisterForm(FlaskForm):
     username = StringField('用户名',validators=[DataRequired(),Length(1,24)])
@@ -63,16 +73,80 @@ class CompanyProfileForm(FlaskForm):
     submit = SubmitField("提交")
 
     def update_company(self, user):
-        company = Company(name = self.name.data,
-        address = self.address.data,
-        website = self.website.data,
-        url = self.logo.data,
-        description = self.description.data,
-        user = user
-        )
+
+        company = Company (name = self.name.data,
+            address = self.address.data,
+            website = self.website.data,
+            url = self.logo.data,
+            description = self.description.data,
+            user = user)
+
         db.session.add(company)
         db.session.commit()
         return company
+
+
+####################  定义求职者配置表单
+class HunterProfileForm(FlaskForm):
+    name = StringField('姓名')
+    email = StringField('邮箱', validators=[Email()])
+    password = PasswordField('密码', validators=[ Length(6, 24)])
+    phonenum = StringField('手机号码', validators=[Length(11)])
+
+    workage = SelectField('工作年限', coerce=str,  choices=[
+        ('1年', '1年'), ('2年', '2年'), ('3年', '3年'), ('1-3年', '1-3年'),
+        ('3-5年', '3-5年'), ('5年以上', '5年以上')], default='2年'
+    )
+    resume_doc = FileField('上传简历', validators=[FileRequired()])
+    submit = SubmitField('提交')
+
+
+    def validate_phonenum(self, field):
+        reg = re.compile(r'(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}')
+        if not reg.match(field.data):
+            raise ValidationError('手机号码格式有误.')
+
+
+    def createprofile(self, user):
+
+        f = self.resume_doc.data
+        jianlidir = os.path.join(current_app.static_folder, 'jianlis')
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(jianlidir, filename))
+
+        # 获取用户的profile
+        profile = user.profile
+        if not profile:
+            profile = HunterProfile()
+
+        if self.name.data:
+            user.username = self.name.data
+        profile.name = user.username
+
+        if self.email.data:
+            user.email = self.email.data
+        profile.email = user.email
+
+        # 配置表单中密码若有输入,则修改user的密码
+        if self.password.data:
+            user.password = self.password.data
+        profile.set_password_fromuser(user)
+
+        profile.phone_num = self.phonenum.data
+        profile.work_age = self.workage.data
+        profile.resume_file=url_for('static', filename='jianlis/'+filename)
+
+        user.profile = profile
+        db.session.add(profile)
+        db.session.add(user)
+        db.session.commit()
+        return profile
+
+
+
+
+#######################  求职者配置表单结束
+
 
 class TagForm(FlaskForm):
 

@@ -33,12 +33,14 @@ def profile():
     return render_template('company/profile.html', form = form)
 
 
+
 @company.route('/addjob')
 @company_required
 def addjob():
     company =current_user.company
     cid = company.id
     return redirect(url_for('job.addjob', cid=cid))
+
 
 @company.route('/rmjob/<int:jobid>')
 @company_required
@@ -47,11 +49,13 @@ def rmjob(jobid):
     cid = company.id
     return redirect(url_for('job.rmjob', cid=cid, jobid=jobid))
 
+
 @company.route('/updatejob/<int:jobid>')
 @company_required
 def updatejob(jobid):
     company =current_user.company
     cid = company.id
+
     return redirect(url_for('job.updatejob', cid=cid, jobid=jobid))
 
 @company.route('/job/<int:jobid>')
@@ -59,8 +63,11 @@ def showjob(jobid):
     return redirect(url_for('job.detail', jobid=jobid))
 
 @company.route('/admin')
+
 @company_required
 def admin():
     company = current_user.company
     jobs = company.jobs
     return render_template('company/admin.html', cid=company.id, jobs=jobs)
+
+

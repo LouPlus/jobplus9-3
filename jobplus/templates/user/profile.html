@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% from "macros.html" import render_form %}
+
+{% block title %}用户详情配置{% endblock %}
+
+{% block body %}
+
+<div class="form">
+    {{ render_form(form,  url_for('hunter.profile'),'') }}
+</div>
+
+{% endblock %}
