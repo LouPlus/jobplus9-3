@@ -53,7 +53,6 @@ class User(Base, UserMixin):
     def get_id(self):
         return self.id
 
-
     def get_company(self):
         return self.company
 
@@ -133,9 +132,6 @@ class Salary_Range(db.Model):
        return '--'.join([x+'元' for x in self.name.split('--')])
 
     __str__ = __repr__
-
-
-
 
 class Job(Base):
     __tablename__ = "job"
