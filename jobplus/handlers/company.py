@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, url_for, render_template, request, current_app, flash
-from jobplus.models import Company, Job, User
+from jobplus.models import Company, Job_Resume
 from jobplus.forms import CompanyProfileForm
 from jobplus.decorators import company_required
 from flask_login import current_user
@@ -34,8 +34,8 @@ def profile():
 
 
 
-# 职位添加页
 
+# 职位添加页
 @company.route('/addjob')
 @company_required
 def addjob():
@@ -85,4 +85,34 @@ def admin():
 def detail():
     company = current_user.company
     return '{}公司详情页面'.format(company.name)
+
+
+
+# 公司投递管理
+@company.route('/resume')
+@company_required
+def delievery():
+    jobs = current_user.company.jobs
+    data = []
+
+    for job in jobs:
+        job_resumes = Job_Resume.query.filter_by(job_id=job.id).all()
+        if job_resumes:
+            data.extend(job_resumes)
+
+    return render_template('company/delievery.html', data=data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

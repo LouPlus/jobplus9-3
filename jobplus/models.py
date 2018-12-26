@@ -79,8 +79,11 @@ class Resume(Base):
 
 
 
+
 # 求职者配置表
 
+
+# 求职者配置表
 class HunterProfile(Base):
     __tablename__ = 'hunter_profile'
 
@@ -142,12 +145,19 @@ class Company(Base):
 # 投递简历表
 job_resume = db.Table('job_resume',
                     db.Column('job_id', db.Integer, db.ForeignKey('job.id'), primary_key=True),
-                    db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True))
+
+                    db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True),
+                    )
+
+
+
 
 
 
 #  投递简历表模型
-class Job_Resume(db.Model):
+
+class Job_Resume(Base):
+
     __tablename__ = 'job_resume'
     __table_args__ = {'extend_existing': True}   # 避免与上面的表定义发生元数据冲突
 
@@ -155,6 +165,7 @@ class Job_Resume(db.Model):
     resume_id = db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True)
     jobs = db.relationship('Job')
     resumes = db.relationship('Resume')
+
 
 
 
@@ -235,8 +246,4 @@ class Job(Base):
     def __repr__(self):
         return "{}".format(self.name)
 
-
-
-def get_resume():
-    return Resume.query
 

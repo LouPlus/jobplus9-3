@@ -1,10 +1,8 @@
 {% extends "base.html" %}
 
-
-
-
-
 {% block title %} 公司管理 {% endblock %}
+
+
 
 
 {% block body %}
@@ -12,8 +10,6 @@
   <div class="col-md-3">
     <h4>公司管理</h4>
     <div class="list-group">
-
-
 
       <a href= "{{ url_for('company.admin') }}" class="list-group-item">职位管理</a>
       <a href= "{{ url_for('job.addtag') }}" class="list-group-item">职位属性管理</a>
@@ -23,44 +19,50 @@
 
 <a href="{{ url_for( 'company.addjob') }}" type="button" class="btn btn-success btn-admin">发布职位</a>
 
+
   </div>
   <div class="col-md-9">
 
 <table class="table">
   <thead>
     <tr>
-      <th>ID</th>
+
       <th>职位名称</th>
-      <th>企业名称</th>
-      <th>发布时间</th>
-      <th>状态</th>
+      <th>求职者</th>
+      <th>简历名称</th>
+      <th>简历地址</th>
+      <th>投档时间</th>
     </tr>
 
     </thead>
   <tbody>
-  {% for job in jobs %}
+  {% for item in data %}
         <tr>
-          <td>{{ job.id }}</td>
-          <td>{{ job.name }}</td>
-          <td>{{ job.company.name }}</td>
-          <td>{{ job.updated_at}} </td>
+
+          <td>{{ item.jobs }}</td>
+          <td>{{ item.resumes.hunter.name }}</td>
+          <td>{{ item.resumes }}</td>
+          <td>{{ item.resumes.path }}</td>
+          <td>{{ item.created_at}} </td>
           <td>
             <div class="btn-group" role="group">
 
               <a href="#" type="button" class="btn btn-default">
-                下线
+                下载
               </a>
 
-              <a href="{{ url_for('company.updatejob', jobid=job.id) }}" type="button" class="btn btn-default">
-                编辑
+              <a href="#" type="button" class="btn btn-default">
+                拒绝
               </a>
-              <a href="{{ url_for('company.rmjob', jobid=job.id) }}" type="button" class="btn btn-default">
-                删除
+              <a href="#" type="button" class="btn btn-default">
+                接受
               </a>
             </div>
           </td>
         </tr>
     </tbody>
+
+
   {% endfor %}
 
 </table>
