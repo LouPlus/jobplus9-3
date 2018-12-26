@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, current_app, flash, abort
 from flask import url_for, redirect
 
-from jobplus.models import db, Job, Jtag, Jcity, Salary_Range, Company
-from jobplus.forms import AddCityForm, AddTagForm, AddSalaryForm, AddJobForm
-
+from jobplus.models import db, Job, Jtag, Jcity, Salary_Range, Company, Job_Resume
+from jobplus.forms import AddCityForm, AddTagForm, AddSalaryForm, AddJobForm, DeliveryForm
+from flask_login import current_user
 
 job = Blueprint('job', __name__, url_prefix='/job')
 
@@ -150,6 +150,7 @@ def addjob(cid):
     return render_template('job/createjob.html', form=form, cid=cid)
 
 
+# 职位更新页面
 @job.route('/<int:cid>/<int:jobid>/updatejob', methods=['GET', 'POST'])
 def updatejob(cid, jobid):
     company = Company.query.get_or_404(cid)
@@ -164,6 +165,7 @@ def updatejob(cid, jobid):
     return render_template('job/updatejob.html', form=form, cid=cid, job=job)
 
 
+# 职位删除处理
 @job.route('/<int:cid>/<int:jobid>/deljob')
 def rmjob(cid, jobid):
     job = Job.query.get_or_404(jobid)
@@ -176,10 +178,28 @@ def rmjob(cid, jobid):
 
 
 # 职位详情页面
-@job.route('/<int:jobid>')
+@job.route('/<int:jobid>', methods=['GET', "POST"])
 def jobdetail(jobid):
     job = Job.query.get_or_404(jobid)
-    return render_template('job/detail.html', job=job)
+    is_delivery = False
+    resumeid = None
+    form = DeliveryForm()
+    # 判断是否投递过简历
+    if current_user and current_user.is_authenticated and current_user.is_hunter:
+        if current_user.profile:
+            if current_user.profile.resumes:
+                for i in current_user.profile.resumes:
+                    resumeid = i.id
+                    if Job_Resume.query.filter_by(resume_id=resumeid, job_id=jobid).first():
+                        is_delivery = True
+                        break
+
+     # 处理投递
+    if resumeid and form.validate_on_submit():
+        form.delivery(resumeid, jobid)
+        flash('简历投递成功', 'message')
+        return redirect(url_for('job.index'))
+    return render_template('job/detail.html', job=job, is_delivery=is_delivery, form=form)
 
 
 

@@ -51,13 +51,26 @@ class User(Base, UserMixin):
     def is_admin(self):
         return self.role == self.ROLE_ADMIN
 
+    @property
+    def is_hunter(self):
+        return self.role == self.ROLE_JOBHUNTER
+
     def get_id(self):
         return self.id
+
     def get_company(self):
         return self.company
 
+# 简历表
+class Resume(Base):
+    __tablename__ = 'resume'
+    id = db.Column(db.Integer, primary_key=True)
+    path = db.Column(db.String(128))
+    hunter_id = db.Column(db.Integer, db.ForeignKey('hunter_profile.id', ondelete="CASCADE"))
+    hunter = db.relationship('HunterProfile', uselist=False)
 
 
+# 求职者配置表
 class HunterProfile(Base):
     __tablename__ = 'hunter_profile'
 
@@ -65,11 +78,11 @@ class HunterProfile(Base):
     name = db.Column(db.String(32), nullable=False)
     email = db.Column(db.String(64), index=True, unique=True, nullable=False)
     _password = db.Column('password', db.String(256))
-    phone_num = db.Column(db.String(11), index=True, unique=True, nullable=False)
-    work_age= db.Column(db.Enum('1年', '2年', '3年', '1-3年', '3-5年', '5年以上'), nullable=False)
-    resume_file = db.Column(db.String(128), default='NULL')
+    phone_num = db.Column(db.String(11))
+    work_age= db.Column(db.Enum('1年', '2年', '3年', '1-3年', '3-5年', '5年以上'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"))
     user = db.relationship('User', uselist=False)
+    resumes = db.relationship('Resume')
 
     @property
     def password(self):
@@ -85,9 +98,11 @@ class HunterProfile(Base):
         """ 判断用户输入的密码和存储的 hash 密码是否相等 """
         return check_password_hash(self._password, password)
 
-
+    # 从user表中设置取密码设置密码
     def set_password_fromuser(self, user):
         self._password = user.password
+
+
 
 
 class Company(Base):
@@ -112,6 +127,24 @@ class Company(Base):
 
     def __repr__(self):
         return '<Company:{}>'.format(self.name)
+
+
+# 投递简历表
+job_resume = db.Table('job_resume',
+                    db.Column('job_id', db.Integer, db.ForeignKey('job.id'), primary_key=True),
+                    db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True))
+
+
+#  投递简历表模型
+class Job_Resume(db.Model):
+    __tablename__ = 'job_resume'
+    __table_args__ = {'extend_existing': True}   # 避免与上面的表定义发生元数据冲突
+
+    job_id = db.Column('job_id', db.Integer, db.ForeignKey('job.id'), primary_key=True)
+    resume_id = db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True)
+    jobs = db.relationship('Job')
+    resumes = db.relationship('Resume')
+
 
 
 job_tag = db.Table('job_tag',
@@ -180,10 +213,16 @@ class Job(Base):
     # 增加反向引用,使得Job对象增加tags属性的同时, Jtag对象增加jobs属性
     tags = db.relationship('Jtag', secondary=job_tag, backref=db.backref('jobs'))
     cities = db.relationship('Jcity', secondary=job_city, backref=db.backref('jobs'))
+    #  关联简历表
+    resumes = db.relationship('Resume', secondary=job_resume, backref=db.backref('jobs'))
+
 
 
     def __repr__(self):
         return "{}".format(self.name)
 
 
+
+def get_resume():
+    return Resume.query.all()
 

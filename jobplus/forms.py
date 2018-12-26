@@ -7,16 +7,15 @@ from wtforms.fields import SelectField
 from wtforms.validators import DataRequired,Email,Length,EqualTo,ValidationError
 from flask_wtf.file import FileField, FileRequired
 
-from jobplus.models import db, User, Job , Company,  HunterProfile
-from jobplus.models import Jtag, Jcity, Salary_Range
+from jobplus.models import db, User, Job , Company,  HunterProfile, Resume, Job_Resume
+from jobplus.models import Jtag, Jcity, Salary_Range, get_resume
 
 from werkzeug.utils import secure_filename
 from wtforms.ext.sqlalchemy.orm import model_form
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
+
 import re
 import os
-
-
-
 
 class RegisterForm(FlaskForm):
     username = StringField('用户名',validators=[DataRequired(),Length(1,24)])
@@ -33,13 +32,20 @@ class RegisterForm(FlaskForm):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('邮箱已存在')
 
-    def create_user(self,register_role):
+    def create_user(self, register_role):
         user = User(
             username=self.username.data,
             email=self.email.data,
             password=self.password.data,
             role=register_role
         )
+
+        # 如果是求职者, 则注册时也同时创建它的profile
+        if register_role == 30:
+            user.profile = HunterProfile(name=user.username, email=user.email)
+            user.profile.set_password_fromuser(user)
+            db.session.add(user.profile)
+
         db.session.add(user)
         db.session.commit()
         return user
@@ -90,14 +96,14 @@ class CompanyProfileForm(FlaskForm):
 class HunterProfileForm(FlaskForm):
     name = StringField('姓名')
     email = StringField('邮箱', validators=[Email()])
-    password = PasswordField('密码', validators=[ Length(6, 24)])
+    password = PasswordField('密码')
     phonenum = StringField('手机号码', validators=[Length(11)])
 
     workage = SelectField('工作年限', coerce=str,  choices=[
         ('1年', '1年'), ('2年', '2年'), ('3年', '3年'), ('1-3年', '1-3年'),
         ('3-5年', '3-5年'), ('5年以上', '5年以上')], default='2年'
     )
-    resume_doc = FileField('上传简历', validators=[FileRequired()])
+    resume_doc = FileField('上传简历')
     submit = SubmitField('提交')
 
 
@@ -108,14 +114,8 @@ class HunterProfileForm(FlaskForm):
 
 
     def createprofile(self, user):
-
-        f = self.resume_doc.data
-        jianlidir = os.path.join(current_app.static_folder, 'jianlis')
-        filename = secure_filename(f.filename)
-        f.save(os.path.join(jianlidir, filename))
-
         # 获取用户的profile
-        profile = user.profile
+        profile = user.profile   # 如果当前用户的profile为空, 则新建profile
         if not profile:
             profile = HunterProfile()
 
@@ -134,7 +134,21 @@ class HunterProfileForm(FlaskForm):
 
         profile.phone_num = self.phonenum.data
         profile.work_age = self.workage.data
-        profile.resume_file=url_for('static', filename='jianlis/'+filename)
+
+
+
+        # 处理文件上传
+        f = self.resume_doc.data
+        if f:
+            # 设置简历
+            if not profile.resumes:
+                profile.resumes = []
+            jianlidir = os.path.join(current_app.static_folder, 'jianlis')
+            filename = secure_filename(f.filename)
+            f.save(os.path.join(jianlidir, filename))
+            resume = Resume(path=url_for('static', filename='jianlis/'+filename))
+            db.session.add(resume)   # 添加简历
+            profile.resumes.append(resume)
 
         user.profile = profile
         db.session.add(profile)
@@ -230,8 +244,6 @@ JobForm = model_form(Job,
                      )
 
 class AddJobForm(JobForm):
-
-
     submit = SubmitField('提交')
 
     def addjob(self, company):
@@ -253,5 +265,18 @@ class AddJobForm(JobForm):
         job.company = company
         db.session.add(job)
         db.session.commit()
+
+
+
+class DeliveryForm(FlaskForm):
+    resume = QuerySelectField('选择简历', validators=[DataRequired()], query_factory=get_resume, get_label='path')
+    submit = SubmitField('立即投递简历')
+
+    def delivery(self, resumeid, jobid):
+        job_resume = Job_Resume(job_id=jobid, resume_id=resumeid)
+        db.session.add(job_resume)  # 增加一条记录
+        db.session.commit()
+
+
 
 
