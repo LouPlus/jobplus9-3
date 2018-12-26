@@ -34,8 +34,8 @@ def profile():
 
 
 
-# 职位添加页
 
+# 职位添加页
 @company.route('/addjob')
 @company_required
 def addjob():
@@ -87,6 +87,7 @@ def detail():
     return '{}公司详情页面'.format(company.name)
 
 
+
 # 公司投递管理
 @company.route('/resume')
 @company_required
@@ -100,7 +101,6 @@ def delievery():
             data.extend(job_resumes)
 
     return render_template('company/delievery.html', data=data)
-
 
 
 
