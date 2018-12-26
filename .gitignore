@@ -13,7 +13,7 @@ __pycache__/
 # Distribution / packaging
 */**/__pycache__
 */**/__pycache__/
-
+*/**/jianlis/
 .Python
 build/
 develop-eggs/

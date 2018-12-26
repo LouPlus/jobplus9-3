@@ -64,6 +64,23 @@
             </div>
       </div>
 
+{% if form %}
+    <form method="post">
+        <div class="form-group ">
+            {{ form.csrf_token }}
+            {{ form.resume.label }}  {{ form.resume(class='form-control') }}
+
+            {% if is_delivery %}
+                {{ form.submit(class_="btn btn-primary btn-lg btn-block disabled") }}
+            {% else %}
+                {{ form.submit(class_="btn btn-primary btn-lg btn-block") }}
+            {% endif %}
+
+        </div>
+    </form>
+{% endif %}
+
+
 
 {% endblock %}
 

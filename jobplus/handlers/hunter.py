@@ -14,7 +14,7 @@ def must_authenticated():
 ### 用户配置页面 ###
 @hunter.route('/profile', methods=['GET', 'POST'])
 def profile():
-    form = HunterProfileForm()
+    form = HunterProfileForm(obj=current_user.profile)
     if form.validate_on_submit():
         print('OK')
         form.createprofile(current_user)
