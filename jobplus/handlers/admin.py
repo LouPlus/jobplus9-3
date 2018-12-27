@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for, flash
 from jobplus.decorators import admin_required
-from jobplus.models import Job, User
+from jobplus.models import db, Job, User, Company
+from jobplus.forms import AddJobForm
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -21,12 +22,38 @@ def jobs():
     jobs = Job.query.all()
     return render_template('admin/jobs.html', jobs=jobs)
 
-@admin.route('/addjob')
+@admin.route('/addjob/<int:user_id>', methods=['GET', 'POST'])
 @admin_required
-def addjob():
-    return redirect(url_for('front.index'))
+def addjob(user_id):
+    user = User.query.get(user_id)
+    company = Company.query.filter_by(user_id=user.id).first()
+    cid = company.id
+    form = AddJobForm()
+    if form.validate_on_submit():
+        form.addjob(company)
+        flash('职位添加成功', 'success')
+        return redirect(url_for('admin.jobs'))
+    return render_template('job/createjob.html', form=form, user_id=user_id)
 
 @admin.route('/adduser')
 @admin_required
 def adduser():
     return redirect(url_for('front.index'))
+
+@admin.route('/liberate/<int:user_id>')
+@admin_required
+def liberate(user_id):
+    user = User.query.get(user_id)
+    user.allowed = True
+    db.session.add(user)
+    db.session.commit()
+    return redirect(url_for('admin.users'))
+
+@admin.route('/forbid/<int:user_id>')
+@admin_required
+def forbid(user_id):
+    user = User.query.get(user_id)
+    user.allowed = False
+    db.session.add(user)
+    db.session.commit()
+    return redirect(url_for('admin.users'))
