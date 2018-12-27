@@ -23,12 +23,12 @@
         <hr>
         <div class="job-b">
             <div class="job-lb">
-                <img src="https://static.lagou.com/thumbnail_300x300/i/image/M00/3E/22/CgqKkVdzobeAB7eoAAIUnE7Fe1M567.png"
+                <img src="{{ job.company.url }}"
                     alt="...">
             </div>
             <div class="job-rb">
                 <p class="job-cname">{{ job.company.name | default('实验楼', true) }}</p>
-                <p class='job-cinfo'>在线教育/A轮/成都高新区</p>
+                <p class='job-cinfo'>{{ job.company.description }}</p>
             </div>
         </div>
     </div>

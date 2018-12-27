@@ -1,13 +1,16 @@
 from flask import Blueprint, render_template, request, current_app, flash, abort
 from flask import url_for, redirect
 
+
 from jobplus.models import db, Job, Jtag, Jcity, Salary_Range, Company, Job_Resume, Resume
+
 from jobplus.forms import AddCityForm, AddTagForm, AddSalaryForm, AddJobForm
 from flask_login import current_user
 
 from flask_wtf import FlaskForm
 from wtforms.fields import SubmitField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
+
 
 from jobplus.decorators import company_required
 
@@ -164,6 +167,7 @@ def addjob(cid):
     return render_template('job/createjob.html', form=form, cid=cid)
 
 
+
 # 职位更新页面
 @job.route('/<int:cid>/<int:jobid>/updatejob', methods=['GET', 'POST'])
 @company_required
@@ -175,7 +179,10 @@ def updatejob(cid, jobid):
         form.updatejob(company, job)
         flash('职位更新成功', 'success')
         return redirect(url_for('company.admin'))
+
     return render_template('job/updatejob.html', form=form, cid=cid, job=job)
+
+
 
 
 # 职位删除处理
@@ -192,10 +199,9 @@ def rmjob(cid, jobid):
 
 # 职位详情页面
 @job.route('/<int:jobid>', methods=['GET', "POST"])
-def jobdetail(jobid):
+def detail(jobid):
     job = Job.query.get_or_404(jobid)
     is_delivery = False
-    resumeid = None
 
     # 判断是否投递过简历
     if current_user and current_user.is_authenticated and current_user.is_hunter:
@@ -219,7 +225,6 @@ def jobdetail(jobid):
 
                 ### 创建类结束 ####
 
-
                 for i in current_user.profile.resumes:
                     resumeid = i.id
                     if Job_Resume.query.filter_by(resume_id=resumeid, job_id=jobid).first():
@@ -235,8 +240,8 @@ def jobdetail(jobid):
                         return redirect(url_for('job.index'))
                     return render_template('job/detail.html', job=job, is_delivery=is_delivery, form=form)
 
-
     return render_template('job/detail.html', job=job)
+
 
 
 
