@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, url_for, render_template, request, current_app, flash
 from jobplus.models import Company, Job_Resume
+
 from jobplus.forms import CompanyProfileForm
 from jobplus.decorators import company_required
 from flask_login import current_user
@@ -21,6 +22,7 @@ def index():
     return render_template('company/index.html', pagination=pagination)
 
 
+
 # 公司配置页
 @company.route('/profile', methods=['GET', 'POST'])
 @company_required
@@ -35,6 +37,9 @@ def profile():
 
 
 
+
+
+
 # 职位添加页
 @company.route('/addjob')
 @company_required
@@ -42,6 +47,7 @@ def addjob():
     company =current_user.company
     cid = company.id
     return redirect(url_for('job.addjob', cid=cid))
+
 
 
 
@@ -64,10 +70,12 @@ def updatejob(jobid):
 
     return redirect(url_for('job.updatejob', cid=cid, jobid=jobid))
 
+
 # 职位详情页
 @company.route('/job/<int:jobid>')
 def showjob(jobid):
     return redirect(url_for('job.detail', jobid=jobid))
+
 
 # 公司管理页
 @company.route('/admin')
@@ -79,12 +87,12 @@ def admin():
 
 
 
+
 # 公司详情页
-@company.route('/detail')
-@company_required
-def detail():
-    company = current_user.company
-    return '{}公司详情页面'.format(company.name)
+@company.route('/<int:cid>/detail')
+def detail(cid):
+    company = Company.query.get_or_404(cid)
+    return render_template('company/detail.html', company=company)
 
 
 
@@ -102,16 +110,7 @@ def delievery():
 
     return render_template('company/delievery.html', data=data)
 
-
-
-
-
-
-
-
-
-
-
+# 职位下线处理
 
 
 

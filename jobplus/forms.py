@@ -2,16 +2,19 @@ from flask import url_for, current_app
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 
+
 from wtforms.fields import SelectField
 
 from wtforms.validators import DataRequired,Email,Length,EqualTo,ValidationError
 from flask_wtf.file import FileField
+
 
 from jobplus.models import db, User, Job , Company,  HunterProfile, Resume
 from jobplus.models import Jtag, Jcity, Salary_Range
 
 from werkzeug.utils import secure_filename
 from wtforms.ext.sqlalchemy.orm import model_form
+
 
 import re
 import os
@@ -78,7 +81,6 @@ class CompanyProfileForm(FlaskForm):
     submit = SubmitField("提交")
 
     def update_company(self, user):
-
         company = Company (name = self.name.data,
             address = self.address.data,
             website = self.website.data,
@@ -264,6 +266,8 @@ class AddJobForm(JobForm):
         job.company = company
         db.session.add(job)
         db.session.commit()
+
+
 
 
 

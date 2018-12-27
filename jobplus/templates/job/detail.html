@@ -40,10 +40,14 @@
             <div class="col-md-8">
               <div class="job-detail">
                 <h3>职位标签</h3> <br>
-                <p>{{ job.tags }} </p>
+                <p>
+                    {% for tag in job.tags %}
+                    {{ tag }}
+                    {% endfor %}
+                </p>
                 <br>
                 <h3>职位描述</h3> <br>
-                <p>Mars internet testing, one ticket to Mars and get the permanent residency!</p>
+                <p>{{ job.description }}</p>
               </div>
             </div>
             <div class="col-md-4">
@@ -60,27 +64,43 @@
               <h4>xinqi</h4>
               <p>领域：None</p>
               <p>融资：None</p>
-              <p>城市：{{ job.cities }}</p>
+              <p>城市：
+                  {% for city in  job.cities %}
+                  {{ city }}
+                  {% endfor %}
+              </p>
             </div>
       </div>
+
 
 {% if form %}
     <form method="post">
         <div class="form-group ">
             {{ form.csrf_token }}
             {{ form.resume.label }}  {{ form.resume(class='form-control') }}
-
-            {% if is_delivery %}
-                {{ form.submit(class_="btn btn-primary btn-lg btn-block disabled") }}
-            {% else %}
-                {{ form.submit(class_="btn btn-primary btn-lg btn-block") }}
-            {% endif %}
+                {% if is_delivery %}
+                    {{ form.submit(class_="btn btn-primary btn-lg btn-block disabled") }}
+                {% else %}
+                    {{ form.submit(class_="btn btn-primary btn-lg btn-block") }}
+                {% endif %}
 
         </div>
     </form>
+{% elif not current_user.is_authenticated %}
+    <p>
+        <button type="button" class="btn btn-primary btn-lg btn-block"
+                onclick="location.href='{{ url_for('front.user_register') }}'" >请注册并上传简历</button>
+    </p>
+{% elif current_user.is_jobhunter %}
+    <p>
+        <button type="button" class="btn btn-primary btn-lg btn-block"
+                onclick="location.href='{{ url_for('hunter.profile') }}'">请先上传简历</button>
+    </p>
+{% else %}
+    <p>
+        <button type="button" class="btn btn-primary btn-lg btn-block"
+                onclick="location.href='{{ url_for('company.updatejob', jobid=job.id) }}'">修改职位</button>
+    </p>
 {% endif %}
-
-
-
 {% endblock %}
 
