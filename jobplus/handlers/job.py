@@ -199,7 +199,6 @@ def rmjob(cid, jobid):
 def jobdetail(jobid):
     job = Job.query.get_or_404(jobid)
     is_delivery = False
-    resumeid = None
 
     # 判断是否投递过简历
     if current_user and current_user.is_authenticated and current_user.is_hunter:

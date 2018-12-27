@@ -68,22 +68,13 @@ def updatejob(jobid):
 
 
 
-@company.route('/job/<int:jobid>')
-def showjob(jobid):
-    return redirect(url_for('job.detail', jobid=jobid))
-
-@company.route('/admin')
-@company_required
-def admin():
-    company = current_user.company
-    jobs = company.jobs
-    return render_template('company/admin.html', cid=company.id, jobs=jobs)
-
-
 # 职位详情页
 @company.route('/job/<int:jobid>')
 def showjob(jobid):
     return redirect(url_for('job.detail', jobid=jobid))
+
+
+
 
 # 公司管理页
 @company.route('/admin')
@@ -118,6 +109,7 @@ def delievery():
 
     return render_template('company/delievery.html', data=data)
 
+# 职位下线处理
 
 
 
