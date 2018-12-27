@@ -24,7 +24,9 @@
     {% for company in pagination.items %}
         <div class="col-sm-6 col-md-3 company-item">
             <div class="thumbnail">
-                <a href="#">
+
+                <a href="{{ url_for('company.detail') }}">
+
                     <img src="{{ company.url }}" width="100" height="100" alt="...">
                     <h3>{{ company.name }}</h3>
                     <p>None</p>

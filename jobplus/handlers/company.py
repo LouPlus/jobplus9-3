@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, url_for, render_template, request, current_app, flash
-from jobplus.models import Company, Job, User
+from jobplus.models import Company, Job_Resume
+
 from jobplus.forms import CompanyProfileForm
 from jobplus.decorators import company_required
 from flask_login import current_user
@@ -9,7 +10,7 @@ from flask_login import current_user
 company = Blueprint('company', __name__, url_prefix='/company')
 
 
-
+# 公司列表页
 @company.route('/')
 def index():
     page = request.args.get('page',default=1, type=int)
@@ -22,6 +23,7 @@ def index():
 
 
 
+# 公司配置页
 @company.route('/profile', methods=['GET', 'POST'])
 @company_required
 def profile():
@@ -33,6 +35,10 @@ def profile():
     return render_template('company/profile.html', form = form)
 
 
+
+
+
+# 职位添加页
 @company.route('/addjob')
 @company_required
 def addjob():
@@ -40,6 +46,9 @@ def addjob():
     cid = company.id
     return redirect(url_for('job.addjob', cid=cid))
 
+
+
+# 职位删除页
 @company.route('/rmjob/<int:jobid>')
 @company_required
 def rmjob(jobid):
@@ -47,12 +56,17 @@ def rmjob(jobid):
     cid = company.id
     return redirect(url_for('job.rmjob', cid=cid, jobid=jobid))
 
+
+
+# 职位更新页
 @company.route('/updatejob/<int:jobid>')
 @company_required
 def updatejob(jobid):
     company =current_user.company
     cid = company.id
     return redirect(url_for('job.updatejob', cid=cid, jobid=jobid))
+
+
 
 @company.route('/job/<int:jobid>')
 def showjob(jobid):
@@ -64,3 +78,46 @@ def admin():
     company = current_user.company
     jobs = company.jobs
     return render_template('company/admin.html', cid=company.id, jobs=jobs)
+
+
+# 职位详情页
+@company.route('/job/<int:jobid>')
+def showjob(jobid):
+    return redirect(url_for('job.detail', jobid=jobid))
+
+# 公司管理页
+@company.route('/admin')
+@company_required
+def admin():
+    company = current_user.company
+    jobs = company.jobs
+    return render_template('company/admin.html', cid=company.id, jobs=jobs)
+
+
+
+# 公司详情页
+@company.route('/detail')
+@company_required
+def detail():
+    company = current_user.company
+    return '{}公司详情页面'.format(company.name)
+
+
+
+# 公司投递管理
+@company.route('/resume')
+@company_required
+def delievery():
+    jobs = current_user.company.jobs
+    data = []
+
+    for job in jobs:
+        job_resumes = Job_Resume.query.filter_by(job_id=job.id).all()
+        if job_resumes:
+            data.extend(job_resumes)
+
+    return render_template('company/delievery.html', data=data)
+
+
+
+
