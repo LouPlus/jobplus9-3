@@ -50,7 +50,7 @@
             <div class="media">
                 <div class="media-left">
                     <a href="/company/#">
-                        <img class="media-object" src="https://static.lagou.com/thumbnail_160x160/i/image2/M00/13/BF/CgotOVnwYgKAQxwQAADd4llXXGw444.png" width="40" height="40" alt="...">
+                        <img class="media-object" src="{{ job.company.url }}" width="40" height="40" alt="...">
                     </a>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                 <a href="/company/#">
                     <h4 class="media-heading">{{ job.company.name }}</h4>
                 </a>
-                <span class="company-meta">None/None/</span>
+                <span class="company-meta">{{ job.company.description }}</span>
             </div>
         </div>
         

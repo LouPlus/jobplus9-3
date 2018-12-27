@@ -1,13 +1,24 @@
 from flask import Blueprint, render_template, request, current_app, flash, abort
 from flask import url_for, redirect
 
-from jobplus.models import db, Job, Jtag, Jcity, Salary_Range, Company, Job_Resume
-from jobplus.forms import AddCityForm, AddTagForm, AddSalaryForm, AddJobForm, DeliveryForm
+
+from jobplus.models import db, Job, Jtag, Jcity, Salary_Range, Company, Job_Resume, Resume
+
+from jobplus.forms import AddCityForm, AddTagForm, AddSalaryForm, AddJobForm
 from flask_login import current_user
+
+from flask_wtf import FlaskForm
+from wtforms.fields import SubmitField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
+
+
+from jobplus.decorators import company_required
+
 
 job = Blueprint('job', __name__, url_prefix='/job')
 
 
+# 职位首页
 @job.route('/')
 def index():
     page = request.args.get('page',default=1, type=int)
@@ -20,8 +31,10 @@ def index():
 
 
 
-
+# 添加标签页面
 @job.route('/createtag', methods=['POST', 'GET'])
+@company_required
+
 def addtag():
     tagform = AddTagForm()
     cityform = AddCityForm()
@@ -53,7 +66,9 @@ def addtag():
 
 
 
+# 删除标签页
 @job.route('/deltag')
+@company_required
 def rmtag():
     tagid = request.args.get('tagid')
     cityid = request.args.get('cityid')
@@ -88,6 +103,7 @@ def rmtag():
 
 
 @job.route('/updatetag', methods=['GET','POST'])
+@company_required
 def updatetag():
     tagid = request.args.get('tagid')
     cityid = request.args.get('cityid')
@@ -140,6 +156,7 @@ def updatetag():
 
 
 @job.route('/<int:cid>/createjob', methods=['GET', 'POST'])
+@company_required
 def addjob(cid):
     company = Company.query.get_or_404(cid)
     form = AddJobForm()
@@ -150,8 +167,10 @@ def addjob(cid):
     return render_template('job/createjob.html', form=form, cid=cid)
 
 
+
 # 职位更新页面
 @job.route('/<int:cid>/<int:jobid>/updatejob', methods=['GET', 'POST'])
+@company_required
 def updatejob(cid, jobid):
     company = Company.query.get_or_404(cid)
     job = Job.query.get_or_404(jobid)
@@ -161,12 +180,14 @@ def updatejob(cid, jobid):
         flash('职位更新成功', 'success')
         return redirect(url_for('company.admin'))
 
-
     return render_template('job/updatejob.html', form=form, cid=cid, job=job)
+
+
 
 
 # 职位删除处理
 @job.route('/<int:cid>/<int:jobid>/deljob')
+@company_required
 def rmjob(cid, jobid):
     job = Job.query.get_or_404(jobid)
     db.session.delete(job)
@@ -176,30 +197,51 @@ def rmjob(cid, jobid):
 
 
 
-
 # 职位详情页面
 @job.route('/<int:jobid>', methods=['GET', "POST"])
-def jobdetail(jobid):
+def detail(jobid):
     job = Job.query.get_or_404(jobid)
     is_delivery = False
-    resumeid = None
-    form = DeliveryForm()
+
     # 判断是否投递过简历
     if current_user and current_user.is_authenticated and current_user.is_hunter:
         if current_user.profile:
-            if current_user.profile.resumes:
+            if current_user.profile.resumes:   # 若当前用户已上传简历
+
+                # 创建读取数据库函数
+                def get_user_resume():
+                    return Resume.query.filter_by(hunter_id=current_user.profile.id).all()
+
+                # 创建投递简历表单
+                class DeliveryForm(FlaskForm):
+                    resume = QuerySelectField('请选择您的简历', query_factory=get_user_resume, allow_blank=False)
+                    submit = SubmitField('立即投递简历')
+
+                    def delivery(self, jobid):
+                        resumeid = self.resume.data.id
+                        job_resume = Job_Resume(job_id=jobid, resume_id=resumeid)
+                        db.session.add(job_resume)  # 增加一条记录
+                        db.session.commit()
+
+                ### 创建类结束 ####
+
                 for i in current_user.profile.resumes:
                     resumeid = i.id
                     if Job_Resume.query.filter_by(resume_id=resumeid, job_id=jobid).first():
                         is_delivery = True
                         break
 
-     # 处理投递
-    if resumeid and form.validate_on_submit():
-        form.delivery(resumeid, jobid)
-        flash('简历投递成功', 'message')
-        return redirect(url_for('job.index'))
-    return render_template('job/detail.html', job=job, is_delivery=is_delivery, form=form)
+                # 处理投递
+                if not is_delivery:
+                    form = DeliveryForm()
+                    if form.validate_on_submit():
+                        form.delivery(jobid)
+                        flash('简历投递成功', 'message')
+                        return redirect(url_for('job.index'))
+                    return render_template('job/detail.html', job=job, is_delivery=is_delivery, form=form)
+
+    return render_template('job/detail.html', job=job)
+
 
 
 

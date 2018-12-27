@@ -2,17 +2,19 @@ from flask import url_for, current_app
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 
+
 from wtforms.fields import SelectField
 
 from wtforms.validators import DataRequired,Email,Length,EqualTo,ValidationError
-from flask_wtf.file import FileField, FileRequired
+from flask_wtf.file import FileField
 
-from jobplus.models import db, User, Job , Company,  HunterProfile, Resume, Job_Resume
-from jobplus.models import Jtag, Jcity, Salary_Range, get_resume
+
+from jobplus.models import db, User, Job , Company,  HunterProfile, Resume
+from jobplus.models import Jtag, Jcity, Salary_Range
 
 from werkzeug.utils import secure_filename
 from wtforms.ext.sqlalchemy.orm import model_form
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
+
 
 import re
 import os
@@ -79,7 +81,6 @@ class CompanyProfileForm(FlaskForm):
     submit = SubmitField("提交")
 
     def update_company(self, user):
-
         company = Company (name = self.name.data,
             address = self.address.data,
             website = self.website.data,
@@ -268,14 +269,8 @@ class AddJobForm(JobForm):
 
 
 
-class DeliveryForm(FlaskForm):
-    resume = QuerySelectField('选择简历', validators=[DataRequired()], query_factory=get_resume, get_label='path')
-    submit = SubmitField('立即投递简历')
 
-    def delivery(self, resumeid, jobid):
-        job_resume = Job_Resume(job_id=jobid, resume_id=resumeid)
-        db.session.add(job_resume)  # 增加一条记录
-        db.session.commit()
+
 
 
 
