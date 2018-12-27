@@ -26,6 +26,7 @@ class User(Base, UserMixin):
     role = db.Column(db.SmallInteger, default=ROLE_JOBHUNTER)
     company = db.relationship('Company', uselist=False)
     profile = db.relationship('HunterProfile', uselist=False)
+    allowed = db.Column(db.Boolean, default=True)
 
 
 
@@ -240,5 +241,3 @@ class Job(Base):
 
     def __repr__(self):
         return "{}".format(self.name)
-
-

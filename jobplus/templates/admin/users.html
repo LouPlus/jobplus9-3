@@ -1,5 +1,5 @@
 {% extends "admin/index.html" %}
-{% block addnew %}<a href="{{ url_for( 'admin.addjob') }}" type="button" class="btn btn-success btn-admin">添加用户</a>{% endblock %}
+{% block addnew %}<a href="#" type="button" class="btn btn-success btn-admin">添加用户</a>{% endblock %}
 {% block admin %}
 <table class="table">
   <thead>
@@ -29,15 +29,22 @@
             <div class="btn-group" role="group">
 
               <a href="#" type="button" class="btn btn-default">
-                下线
-              </a>
-
-              <a href="#" type="button" class="btn btn-default">
                 编辑
               </a>
-              <a href="#" type="button" class="btn btn-default">
-                删除
+              {% if not user.is_admin and user.allowed == True %}
+              <a href="{{url_for('admin.forbid', user_id=user.id)}}" type="button" class="btn btn-default">
+                禁用
               </a>
+              {% elif not user.is_admin %}
+              <a href="{{url_for('admin.liberate', user_id=user.id)}}" type="button" class="btn btn-default">
+                解禁
+              </a>
+              {% endif %}
+              {% if user.is_company %}
+              <a href="{{url_for('admin.addjob', user_id=user.id)}}" type="button" class="btn btn-admin">
+                +职位
+              </a>
+              {% endif %}
             </div>
           </td>
         </tr>
