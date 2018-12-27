@@ -196,7 +196,7 @@ def rmjob(cid, jobid):
 
 # 职位详情页面
 @job.route('/<int:jobid>', methods=['GET', "POST"])
-def jobdetail(jobid):
+def detail(jobid):
     job = Job.query.get_or_404(jobid)
     is_delivery = False
 

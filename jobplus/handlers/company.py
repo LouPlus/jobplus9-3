@@ -87,11 +87,10 @@ def admin():
 
 
 # 公司详情页
-@company.route('/detail')
-@company_required
-def detail():
-    company = current_user.company
-    return '{}公司详情页面'.format(company.name)
+@company.route('/<int:cid>/detail')
+def detail(cid):
+    company = Company.query.get_or_404(cid)
+    return render_template('company/detail.html', company=company)
 
 
 
