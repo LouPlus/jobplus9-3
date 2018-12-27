@@ -41,7 +41,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <p class="navbar-brand" href="{{ url_for('front.index') }}">JobPlus</p>
+                <a class="navbar-brand" href="{{ url_for('front.index') }}">JobPlus</p>
             </div>
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -54,6 +54,9 @@
                     <li id='companies'><a href="{{ url_for('company.index') }}">公司</a></li>
                     {% if current_user.is_authenticated and current_user.is_company  %}
                     <li><a href="{{ url_for('company.admin') }}">管理</a></li>
+                    {% endif %}
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                    <li><a href="{{ url_for('admin.index') }}">管理</a></li>
                     {% endif %}
 
 
