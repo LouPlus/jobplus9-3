@@ -29,6 +29,7 @@ class User(Base, UserMixin):
     profile = db.relationship('HunterProfile', uselist=False)
 
 
+
     def __repr__(self):
         return '<User:{}>'.format(self.username)
 
@@ -82,7 +83,7 @@ class Resume(Base):
 
 
 
-# 求职者配置表
+
 
 
 # 求职者配置表
@@ -147,7 +148,6 @@ class Company(Base):
 # 投递简历表
 job_resume = db.Table('job_resume',
                     db.Column('job_id', db.Integer, db.ForeignKey('job.id'), primary_key=True),
-
                     db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True),
                     )
 
@@ -159,7 +159,6 @@ job_resume = db.Table('job_resume',
 #  投递简历表模型
 
 class Job_Resume(Base):
-
     __tablename__ = 'job_resume'
     __table_args__ = {'extend_existing': True}   # 避免与上面的表定义发生元数据冲突
 
@@ -167,9 +166,6 @@ class Job_Resume(Base):
     resume_id = db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True)
     jobs = db.relationship('Job')
     resumes = db.relationship('Resume')
-
-
-
 
 
 
@@ -232,7 +228,6 @@ class Job(Base):
     description = db.Column(db.Text(512))
     edulevel = db.Column(db.Enum('不限','初中','高中','技校','大专','本科','研究生','硕士','博士'), default='不限')
     experlevel = db.Column(db.Enum('不限','1年','2年','3年','1-3年','3-5年','5年以上'), default='不限')
-
 
     requirements = db.Column(db.Text(1024))
     company_id = db.Column(db.Integer, db.ForeignKey('company.id', ondelete="CASCADE"))

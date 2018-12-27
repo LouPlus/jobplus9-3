@@ -38,6 +38,9 @@ def profile():
 
 
 
+
+
+
 # 职位添加页
 @company.route('/addjob')
 @company_required
@@ -45,6 +48,7 @@ def addjob():
     company =current_user.company
     cid = company.id
     return redirect(url_for('job.addjob', cid=cid))
+
 
 
 
@@ -74,8 +78,6 @@ def showjob(jobid):
     return redirect(url_for('job.detail', jobid=jobid))
 
 
-
-
 # 公司管理页
 @company.route('/admin')
 @company_required
@@ -83,6 +85,7 @@ def admin():
     company = current_user.company
     jobs = company.jobs
     return render_template('company/admin.html', cid=company.id, jobs=jobs)
+
 
 
 
@@ -109,6 +112,7 @@ def delievery():
     return render_template('company/delievery.html', data=data)
 
 # 职位下线处理
+
 
 
 

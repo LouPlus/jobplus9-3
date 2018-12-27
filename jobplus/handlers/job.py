@@ -12,6 +12,10 @@ from wtforms.fields import SubmitField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 
+
+
+
+
 from jobplus.decorators import company_required
 
 job = Blueprint('job', __name__, url_prefix='/job')
@@ -178,7 +182,10 @@ def updatejob(cid, jobid):
         form.updatejob(company, job)
         flash('职位更新成功', 'success')
         return redirect(url_for('company.admin'))
+
     return render_template('job/updatejob.html', form=form, cid=cid, job=job)
+
+
 
 
 
@@ -222,7 +229,6 @@ def detail(jobid):
 
                 ### 创建类结束 ####
 
-
                 for i in current_user.profile.resumes:
                     resumeid = i.id
                     if Job_Resume.query.filter_by(resume_id=resumeid, job_id=jobid).first():
@@ -238,8 +244,8 @@ def detail(jobid):
                         return redirect(url_for('job.index'))
                     return render_template('job/detail.html', job=job, is_delivery=is_delivery, form=form)
 
-
     return render_template('job/detail.html', job=job)
+
 
 
 

@@ -1,27 +1,6 @@
-{% extends "base.html" %}
-
-{% block title %} 公司管理 {% endblock %}
-
-
-
-{% block body %}
-<div class="row">
-  <div class="col-md-3">
-    <h4>公司管理</h4>
-    <div class="list-group">
-
-
-      <a href= "{{ url_for('company.admin') }}" class="list-group-item">职位管理</a>
-      <a href= "{{ url_for('job.addtag') }}" class="list-group-item">职位属性管理</a>
-      <a href="{{ url_for('company.delievery')}}" class="list-group-item">投递管理</a>
-    </div>
-
-
-<a href="{{ url_for( 'company.addjob') }}" type="button" class="btn btn-success btn-admin">发布职位</a>
-
-  </div>
-  <div class="col-md-9">
-
+{% extends "admin/index.html" %}
+{% block addnew %}<a href="{{ url_for( 'admin.adduser') }}" type="button" class="btn btn-success btn-admin">添加职位</a>{% endblock %}
+{% block admin %}
 <table class="table">
   <thead>
     <tr>
@@ -60,8 +39,4 @@
   {% endfor %}
 
 </table>
-
-  </div>
-</div>
-
-{% endblock %}
+{% endblock%}
