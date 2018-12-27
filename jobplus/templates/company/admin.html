@@ -45,11 +45,15 @@
           <td>{{ job.updated_at}} </td>
           <td>
             <div class="btn-group" role="group">
-
-              <a href="#" type="button" class="btn btn-default">
-                下线
-              </a>
-
+              {% if job.is_online %}
+                <a href="{{ url_for('job.offline', jobid=job.id)}}" type="button" class="btn btn-default">
+                  下线
+                </a>
+              {% else %}
+                <a href="{{ url_for('job.online', jobid=job.id)}}" type="button" class="btn btn-default">
+                  上线
+                </a>
+              {% endif %}
               <a href="{{ url_for('company.updatejob', jobid=job.id) }}" type="button" class="btn btn-default">
                 编辑
               </a>
