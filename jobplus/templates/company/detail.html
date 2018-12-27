@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}{{ company.name }} {% endblock %}
+
+
+{% block head_js %}
+<script>
+	$(function () {
+		$('#myTab li:eq(1) a').tab('show');
+	});
+</script>
+{% endblock %}
+
+
+{% block body %}
+<div class="container-fluid header">
+
+    <div class="jumbotron">
+        <div class="container">
+            <div class="col-md-3">
+                <div class="thumbnail">
+                    <img src="{{ company.url }}">
+                </div>
+            </div>
+            <div class="col-md-9">
+                <h2>{{ company.name }}</h2>
+                <p>{{ company.oneword }}</p>
+                <a href="#">{{ company.description }}</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="container">
+
+    <div class="col-md-8">
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#company_desc">公司介绍</a></li>
+            <li><a data-toggle="tab" href="#joblist">在招职位({{ company.jobs | count}})</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="company_desc" class="tab-pane fade in active">
+                <p class="lead">
+                    {{ company.description }}
+                </p>
+            </div>
+            <div id="joblist" class="tab-pane fade">
+                <ul class="list-group">
+                {% for job in company.jobs %}
+                    <li class="list-group-item">
+                        <a href="{{ url_for('company.showjob', jobid=job.id) }}">
+                            {{ job.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+
+    <div class="col-md-4">
+        <h4>公司基本信息</h4>
+        <p>领域：None</p>
+        <p>网址：{{ company.website }}</p>
+        <p>地址：{{ company.address }}</p>
+    </div>
+
+
+
+
+
+</div>
+
+
+
+{% endblock %}
+
