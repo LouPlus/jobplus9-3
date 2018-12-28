@@ -1,0 +1,44 @@
+{% extends "admin/index.html" %}
+{% from "macros.html" import render_pagination as pn %}
+
+
+
+{% block admin %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>企业名称</th>
+      <th>企业管理用户</th>
+      <th>发布时间</th>
+      <th>状态</th>
+    </tr>
+
+    </thead>
+  <tbody>
+  {% for company in pagination.items %}
+        <tr>
+          <td>{{ company.id }}</td>
+          <td>{{ company.name }}</td>
+          <td>{{ company.user.username }}</td>
+          <td>{{ moment(company.updated_at).format('LLL') }} </td>
+          <td>
+            <div class="btn-group" role="group">
+
+              <a href="{{ url_for('admin.updatecompany', cid=company.id) }}" type="button" class="btn btn-default">
+                编辑
+              </a>
+              <a href="{{ url_for('admin.rmcompany', cid=company.id) }}" type="button" class="btn btn-default">
+                删除
+              </a>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  {% endfor %}
+
+</table>
+
+{{ pn(pagination, 'admin.companies') }}
+
+{% endblock%}

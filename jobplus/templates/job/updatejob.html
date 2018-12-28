@@ -2,8 +2,12 @@
 {% from "macros.html" import render_form %}
 
 {% block body%}
-    <h4>修改职位</h4>
+    <h4 class="text-center">修改职位</h4>
     <div class="form">
+        {% if current_user.is_admin %}
+        {{ render_form(form, url_for('admin.updatejob', jobid=job.id)) }}
+        {% else %}
         {{ render_form(form, url_for('job.updatejob', cid=cid, jobid=job.id)) }}
+        {% endif %}
     </div>
 {% endblock %}
