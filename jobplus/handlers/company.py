@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, url_for, render_template, request, current_app, flash
-from jobplus.models import Company, Job_Resume
+from jobplus.models import Company, Job_Resume, db
 
 from jobplus.forms import CompanyProfileForm
 from jobplus.decorators import company_required
@@ -33,6 +33,7 @@ def profile():
         flash('公司注册成功', 'success')
         return redirect(url_for('front.index'))
     return render_template('company/profile.html', form = form)
+
 
 
 
@@ -101,16 +102,53 @@ def detail(cid):
 @company_required
 def delievery():
     jobs = current_user.company.jobs
-    data = []
+    accept_list = []
+    reject_list= []
+    unhandler_list = []
 
     for job in jobs:
         job_resumes = Job_Resume.query.filter_by(job_id=job.id).all()
         if job_resumes:
-            data.extend(job_resumes)
+            for jr in job_resumes:
+                print(jr.is_pass)
+                if jr.is_pass is None:
+                    unhandler_list.append(jr)
+                elif jr.is_pass is True:
+                    accept_list.append(jr)
+                else:
+                    reject_list.append(jr)
 
-    return render_template('company/delievery.html', data=data)
+    return render_template('company/delievery.html', accept=accept_list, reject=reject_list , unhandler= unhandler_list)
 
-# 职位下线处理
+
+
+
+# 接受求职者
+@company.route('/accept/<int:jobid>/<int:resumeid>')
+@company_required
+def accept(jobid, resumeid):
+    jr = Job_Resume.query.filter_by(job_id=jobid, resume_id=resumeid).first()
+    jr.is_pass=True
+    db.session.add(jr)
+    db.session.commit()
+    return redirect(url_for('company.delievery'))
+
+# 拒绝求职者
+@company.route('/reject/<int:jobid>/<int:resumeid>')
+@company_required
+def reject(jobid, resumeid):
+    jr = Job_Resume.query.filter_by(job_id=jobid, resume_id=resumeid).first()
+    jr.is_pass=False
+    db.session.add(jr)
+    db.session.commit()
+    return redirect(url_for('company.delievery'))
+
+
+
+
+
+
+
 
 
 

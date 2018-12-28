@@ -1,0 +1,41 @@
+{% extends "admin/index.html" %}
+{% block admin %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>职位名称</th>
+      <th>企业名称</th>
+      <th>发布时间</th>
+      <th>状态</th>
+    </tr>
+
+    </thead>
+  <tbody>
+  {% for job in jobs %}
+        <tr>
+          <td>{{ job.id }}</td>
+          <td>{{ job.name }}</td>
+          <td>{{ job.company.name }}</td>
+          <td>{{ job.updated_at}} </td>
+          <td>
+            <div class="btn-group" role="group">
+
+              <a href="#" type="button" class="btn btn-default">
+                下线
+              </a>
+
+              <a href="{{ url_for('company.updatejob', jobid=job.id) }}" type="button" class="btn btn-default">
+                编辑
+              </a>
+              <a href="{{ url_for('company.rmjob', jobid=job.id) }}" type="button" class="btn btn-default">
+                删除
+              </a>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  {% endfor %}
+
+</table>
+{% endblock%}

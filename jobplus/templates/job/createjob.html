@@ -7,10 +7,11 @@
 {% block body %}
 
 <div class="form">
+    {% if current_user.is_admin %}
+    {{ render_form(form, url_for('admin.addjob', user_id=user_id),'') }}
+    {% else %}
     {{ render_form(form, url_for('job.addjob', cid=cid),'') }}
+    {% endif %}
 </div>
 
 {% endblock %}
-
-
-
