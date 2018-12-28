@@ -12,6 +12,10 @@ from wtforms.fields import SubmitField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 
+
+
+
+
 from jobplus.decorators import company_required
 
 
@@ -186,6 +190,7 @@ def updatejob(cid, jobid):
 
 
 
+
 # 职位删除处理
 @job.route('/<int:cid>/<int:jobid>/deljob')
 @company_required
@@ -243,11 +248,12 @@ def detail(jobid):
                     form = DeliveryForm()
                     if form.validate_on_submit():
                         form.delivery(jobid)
-                        flash('简历投递成功', 'message')
+                        flash('简历投递成功', 'success')
                         return redirect(url_for('job.index'))
                     return render_template('job/detail.html', job=job, is_delivery=is_delivery, form=form)
 
     return render_template('job/detail.html', job=job)
+
 
 
 
@@ -276,4 +282,5 @@ def online(jobid):
     db.session.commit()
     flash('{}上线成功'.format(job.name), 'success')
     return redirect(url_for('company.admin'))
+
 

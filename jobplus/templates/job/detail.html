@@ -91,16 +91,17 @@
         <button type="button" class="btn btn-primary btn-lg btn-block"
                 onclick="location.href='{{ url_for('front.user_register') }}'" >请注册并上传简历</button>
     </p>
-{% elif current_user.is_jobhunter %}
-    <p>
-        <button type="button" class="btn btn-primary btn-lg btn-block"
-                onclick="location.href='{{ url_for('hunter.profile') }}'">请先上传简历</button>
-    </p>
-{% else %}
+{% elif current_user.is_jobhunter  %}
+<p>
+    <button type="button" class="btn btn-primary btn-lg btn-block"
+            onclick="location.href='{{ url_for('hunter.profile') }}'">请先上传简历</button>
+</p>
+{% elif current_user.is_company  or current_user.is_admin %}
     <p>
         <button type="button" class="btn btn-primary btn-lg btn-block"
                 onclick="location.href='{{ url_for('company.updatejob', jobid=job.id) }}'">修改职位</button>
     </p>
 {% endif %}
+
 {% endblock %}
 

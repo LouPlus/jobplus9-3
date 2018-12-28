@@ -18,6 +18,7 @@ from wtforms.ext.sqlalchemy.orm import model_form
 
 import re
 import os
+import time
 
 class RegisterForm(FlaskForm):
     username = StringField('用户名',validators=[DataRequired(),Length(1,24)])
@@ -145,9 +146,19 @@ class HunterProfileForm(FlaskForm):
             if not profile.resumes:
                 profile.resumes = []
             jianlidir = os.path.join(current_app.static_folder, 'jianlis')
-            filename = secure_filename(f.filename)
+            print(f.filename, type(f.filename))
+            suffix = secure_filename(f.filename).split('.')[-1]
+            #print(filename, type(filename))
+
+
+            length=len(profile.resumes)+1
+            filename = str(time.time())+str(length)+'.'+suffix
+            print(filename)
             f.save(os.path.join(jianlidir, filename))
-            resume = Resume(path=url_for('static', filename='jianlis/'+filename))
+            resume = Resume(
+                path=url_for('static', filename='jianlis/'+filename),
+                name="{}_{}-resume".format(profile.name,str(length))
+            )
             db.session.add(resume)   # 添加简历
             profile.resumes.append(resume)
 
@@ -266,3 +277,4 @@ class AddJobForm(JobForm):
         job.company = company
         db.session.add(job)
         db.session.commit()
+

@@ -16,7 +16,6 @@ def must_authenticated():
 def profile():
     form = HunterProfileForm(obj=current_user.profile)
     if form.validate_on_submit():
-        print('OK')
         form.createprofile(current_user)
         flash('用户配置已提交', 'success')
         return redirect(url_for('front.index'))
