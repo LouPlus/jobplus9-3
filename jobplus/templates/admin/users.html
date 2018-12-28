@@ -1,5 +1,5 @@
 {% extends "admin/index.html" %}
-{% block addnew %}<a href="#" type="button" class="btn btn-success btn-admin">添加用户</a>{% endblock %}
+{% block addnew %}<a href="{{url_for('admin.adduser')}}" type="button" class="btn btn-success btn-admin">添加用户</a>{% endblock %}
 {% block admin %}
 <table class="table">
   <thead>
