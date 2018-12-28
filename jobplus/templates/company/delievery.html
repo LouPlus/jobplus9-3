@@ -67,10 +67,13 @@
                       <a href="{{ item.resumes.path }}" type="button" class="btn btn-default">
                         下载
                       </a>
-
+                      <a href="{{ url_for('company.accept', jobid=item.jobs.id, resumeid=item.resumes.id) }}" type="button" class="btn btn-default">
+                        接受
+                      </a>
                       <a href="{{ url_for('company.reject', jobid=item.jobs.id, resumeid=item.resumes.id) }}" type="button" class="btn btn-default">
                         拒绝
                       </a>
+
                     </div>
                   </td>
                 </tr>
@@ -114,8 +117,8 @@
                   <a href="{{ item.resumes.path }}" type="button" class="btn btn-default">
                     下载
                   </a>
-                  <a href="{{ url_for('company.accept', jobid=item.jobs.id, resumeid=item.resumes.id) }}" type="button" class="btn btn-default">
-                    接受
+                  <a href="{{ url_for('company.reject', jobid=item.jobs.id, resumeid=item.resumes.id) }}" type="button" class="btn btn-default">
+                    拒绝
                   </a>
                 </div>
               </td>
