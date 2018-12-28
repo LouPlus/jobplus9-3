@@ -53,6 +53,39 @@ class RegisterForm(FlaskForm):
         db.session.commit()
         return user
 
+class AddUserForm(FlaskForm):
+    username = StringField('用户名',validators=[DataRequired(),Length(1,24)])
+    email = StringField('邮箱', validators=[DataRequired(), Email()])
+    password = PasswordField('密码', validators=[DataRequired(),Length(6,24)])
+    repeat_password = PasswordField('重复密码', validators=[DataRequired(),EqualTo('password')])
+    role = SelectField('用户类型', coerce=int, choices=[(10,'管理员'),(20,'企业'),(30,'求职者')])
+    submit = SubmitField('提交')
+
+    def validate_username(self,field):
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError('用户名已存在')
+
+    def validate_email(self,field):
+        if User.query.filter_by(email=field.data).first():
+            raise ValidationError('邮箱已存在')
+
+    def create_user(self):
+        user = User(
+            username=self.username.data,
+            email=self.email.data,
+            password=self.password.data,
+            role=self.role.data,
+        )
+
+        # 如果是求职者, 则注册时也同时创建它的profile
+        if self.role.data == 30:
+            user.profile = HunterProfile(name=user.username, email=user.email)
+            user.profile.set_password_fromuser(user)
+            db.session.add(user.profile)
+
+        db.session.add(user)
+        db.session.commit()
+        return user
 
 class LoginForm(FlaskForm):
     email = StringField('邮箱', validators=[DataRequired(), Email()])
