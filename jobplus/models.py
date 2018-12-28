@@ -165,7 +165,7 @@ class Job_Resume(Base):
 
     job_id = db.Column('job_id', db.Integer, db.ForeignKey('job.id'), primary_key=True)
     resume_id = db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True)
-    is_pass = db.Column('is_pass', db.Boolean, server_default=text('True'), nullable=False)
+    is_pass = db.Column('is_pass', db.Boolean)
     jobs = db.relationship('Job')
     resumes = db.relationship('Resume')
 
