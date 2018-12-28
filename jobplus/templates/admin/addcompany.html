@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% from "macros.html" import render_form %}
+{% block title %}配置企业{% endblock %}
+
+
+
+{% block body %}
+<h4 class="text-center">配置企业</h4>
+<div class="form">
+    {% if user_id %}
+        {{ render_form(form, url_for('admin.addcompany', user_id=user_id),'') }}
+    {% endif %}
+    {% if cid %}
+        {{ render_form(form, url_for('admin.updatecompany', cid=cid),'') }}
+    {% endif %}
+</div>
+
+{% endblock %}

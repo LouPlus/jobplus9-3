@@ -114,13 +114,20 @@ class CompanyProfileForm(FlaskForm):
     info = StringField("公司信息", validators=[DataRequired()])
     submit = SubmitField("提交")
 
-    def update_company(self, user):
+
+
+    def update_company(self, user=None):
+
+
         company = Company (name = self.name.data,
             address = self.address.data,
             website = self.website.data,
             url = self.logo.data,
-            description = self.description.data,
-            user = user)
+            description = self.description.data)
+
+        if user:
+            company.user = user
+
 
         db.session.add(company)
         db.session.commit()
@@ -291,7 +298,7 @@ JobForm = model_form(Job,
 class AddJobForm(JobForm):
     submit = SubmitField('提交')
 
-    def addjob(self, company):
+    def addjob(self, company=None):
         job = Job(name=self.name.data,
                   requirements=self.requirements.data,
                   salary_range=self.salary_range.data,
@@ -300,14 +307,19 @@ class AddJobForm(JobForm):
                   experlevel=self.experlevel.data,
                   tags=self.tags.data,
                   cities=self.cities.data)
-        job.company = company
+        if company:
+            job.company = company
 
         db.session.add(job)
         db.session.commit()
+        return job
 
-    def updatejob(self, company, job):
+
+    def updatejob(self, job, company=None):
         self.populate_obj(job)   # 从表单中获取最新数据并填充到对象job
-        job.company = company
+        if company:
+            job.company = company
         db.session.add(job)
         db.session.commit()
+        return job
 

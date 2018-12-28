@@ -38,7 +38,6 @@ def index():
 # 添加标签页面
 @job.route('/createtag', methods=['POST', 'GET'])
 @company_required
-
 def addtag():
     tagform = AddTagForm()
     cityform = AddCityForm()
