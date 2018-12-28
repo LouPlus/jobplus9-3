@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% from "macros.html" import render_form %}
+{% block title %}添加用户{% endblock %}
+{% block body %}
+<div class="form">
+{{ render_form(form,url_for('admin.adduser'),'用户名') }}
+</div>
+{% endblock %}
