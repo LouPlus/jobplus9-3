@@ -40,6 +40,7 @@ def profile():
 
 
 
+
 # 职位添加页
 @company.route('/addjob')
 @company_required
@@ -104,16 +105,25 @@ def delievery():
     accept_list = []
     reject_list= []
 
+    unhandler_list = []
+
+
     for job in jobs:
         job_resumes = Job_Resume.query.filter_by(job_id=job.id).all()
         if job_resumes:
             for jr in job_resumes:
-                if jr.is_pass:
+                if jr.is_pass is None:
+                    unhandler_list.append(jr)
+                elif jr.is_pass is True:
                     accept_list.append(jr)
                 else:
                     reject_list.append(jr)
 
-    return render_template('company/delievery.html', accept=accept_list, reject=reject_list)
+    return render_template('company/delievery.html',
+                           accept=accept_list,
+                           reject=reject_list ,
+                           unhandler= unhandler_list)
+
 
 
 
@@ -137,6 +147,7 @@ def reject(jobid, resumeid):
     db.session.add(jr)
     db.session.commit()
     return redirect(url_for('company.delievery'))
+
 
 
 

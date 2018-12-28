@@ -30,6 +30,7 @@ class User(Base, UserMixin):
 
 
 
+
     def __repr__(self):
         return '<User:{}>'.format(self.username)
 
@@ -164,7 +165,8 @@ class Job_Resume(Base):
 
     job_id = db.Column('job_id', db.Integer, db.ForeignKey('job.id'), primary_key=True)
     resume_id = db.Column('resume_id', db.Integer, db.ForeignKey('resume.id'), primary_key=True)
-    is_pass = db.Column('is_pass', db.Boolean, server_default=text('True'), nullable=False)
+
+    is_pass = db.Column('is_pass', db.Boolean)
     jobs = db.relationship('Job')
     resumes = db.relationship('Resume')
 
@@ -226,9 +228,12 @@ class Job(Base):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(32), nullable=False)
     is_online =db.Column(db.Boolean, server_default=text('True'), nullable=False)
+
+
     description = db.Column(db.Text(512))
     edulevel = db.Column(db.Enum('不限','初中','高中','技校','大专','本科','研究生','硕士','博士'), default='不限')
     experlevel = db.Column(db.Enum('不限','1年','2年','3年','1-3年','3-5年','5年以上'), default='不限')
+    # is_open =db.Column(d)
     requirements = db.Column(db.Text(1024))
     company_id = db.Column(db.Integer, db.ForeignKey('company.id', ondelete="CASCADE"))
     salary_range_id = db.Column(db.Integer, db.ForeignKey('salary_range.id',ondelete="SET NULL"))
