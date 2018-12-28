@@ -9,7 +9,7 @@ front = Blueprint('front', __name__)
 
 @front.route('/')
 def index():
-    jobs = Job.query.order_by(Job.updated_at.desc()).limit(9)
+    jobs = Job.query.filter_by(is_online=True).order_by(Job.updated_at.desc()).limit(9)
     companies = Company.query.order_by(Company.updated_at.desc()).limit(9)
     return render_template('index.html', jobs=jobs, companies=companies)
 

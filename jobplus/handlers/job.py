@@ -25,7 +25,7 @@ job = Blueprint('job', __name__, url_prefix='/job')
 @job.route('/')
 def index():
     page = request.args.get('page',default=1, type=int)
-    pagination = Job.query.paginate(
+    pagination = Job.query.filter_by(is_online=True).paginate(
         page=page,
         per_page=current_app.config['JOBINDEX_PER_PAGE'],
         error_out=False
@@ -157,7 +157,7 @@ def updatetag():
 
 
 
-
+# 职位添加页面
 @job.route('/<int:cid>/createjob', methods=['GET', 'POST'])
 @company_required
 def addjob(cid):
@@ -177,6 +177,7 @@ def addjob(cid):
 def updatejob(cid, jobid):
     company = Company.query.get_or_404(cid)
     job = Job.query.get_or_404(jobid)
+
     form = AddJobForm(obj=job)  # 用表对象填充表单模型对象
     if form.validate_on_submit():
         form.updatejob(company, job)
@@ -194,6 +195,7 @@ def updatejob(cid, jobid):
 @company_required
 def rmjob(cid, jobid):
     job = Job.query.get_or_404(jobid)
+
     db.session.delete(job)
     db.session.commit()
     flash('职位删除成功', 'success')
@@ -205,6 +207,11 @@ def rmjob(cid, jobid):
 @job.route('/<int:jobid>', methods=['GET', "POST"])
 def detail(jobid):
     job = Job.query.get_or_404(jobid)
+
+    if not job.is_online:
+        abort(404)
+
+
     is_delivery = False
 
     # 判断是否投递过简历
@@ -248,4 +255,29 @@ def detail(jobid):
 
 
 
+
+# 职位下线处理
+@job.route('/offline/<int:jobid>')
+@company_required
+def offline(jobid):
+    job = Job.query.get_or_404(jobid)
+    job.is_online = False
+    db.session.add(job)
+    db.session.commit()
+    flash('{}下线成功'.format(job.name), 'success')
+    return redirect(url_for('company.admin'))
+
+
+
+
+# 职位上线处理
+@job.route('/online/<int:jobid>')
+@company_required
+def online(jobid):
+    job = Job.query.get_or_404(jobid)
+    job.is_online = True
+    db.session.add(job)
+    db.session.commit()
+    flash('{}上线成功'.format(job.name), 'success')
+    return redirect(url_for('company.admin'))
 
