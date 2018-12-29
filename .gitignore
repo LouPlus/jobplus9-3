@@ -134,3 +134,6 @@ dmypy.json
 
 # flask-migrate
 migrations/
+
+# pymysql
+jobplus/__init__.py

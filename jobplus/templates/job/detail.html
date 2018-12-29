@@ -54,14 +54,14 @@
               <div class="media">
               <div class="media-left">
                 <a href="#">
-                  <img src="" class="media-object" height="96" width="96">
+                  <img src="{{ job.company.url }}" class="media-object" height="96" width="96">
                 </a>
               </div>
               <div class="media-body">
               </div>
               </div>
 
-              <h4>xinqi</h4>
+              <h4>{{ job.company.name }}</h4>
               <p>领域：None</p>
               <p>融资：None</p>
               <p>城市：
@@ -102,7 +102,6 @@
                 onclick="location.href='{{ url_for('company.updatejob', jobid=job.id) }}'">修改职位</button>
     </p>
 {% endif %}
-
 
 
 {% endblock %}

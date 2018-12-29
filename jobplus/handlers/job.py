@@ -16,6 +16,12 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 
 
+
+from jobplus.decorators import company_required
+
+
+
+
 from jobplus.decorators import company_required
 
 job = Blueprint('job', __name__, url_prefix='/job')
@@ -37,7 +43,6 @@ def index():
 # 添加标签页面
 @job.route('/createtag', methods=['POST', 'GET'])
 @company_required
-
 def addtag():
     tagform = AddTagForm()
     cityform = AddCityForm()
@@ -256,6 +261,7 @@ def detail(jobid):
 
 
 
+
 # 职位下线处理
 @job.route('/offline/<int:jobid>')
 @company_required
@@ -280,4 +286,5 @@ def online(jobid):
     db.session.commit()
     flash('{}上线成功'.format(job.name), 'success')
     return redirect(url_for('company.admin'))
+
 

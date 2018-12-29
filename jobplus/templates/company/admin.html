@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 
+{% from "macros.html" import render_pagination  as np %}
+
 {% block title %} 公司管理 {% endblock %}
 
+{% block head_js %}
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
+    {{ moment.lang('zh-CN') }}
+{% endblock %}
 
 
 {% block body %}
@@ -34,12 +41,12 @@
 
     </thead>
   <tbody>
-  {% for job in jobs %}
+  {% for job in pagination.items %}
         <tr>
           <td>{{ job.id }}</td>
           <td>{{ job.name }}</td>
           <td>{{ job.company.name }}</td>
-          <td>{{ job.updated_at}} </td>
+          <td>{{ moment(job.updated_at).format('LLL') }} </td>
           <td>
             <div class="btn-group" role="group">
               {% if job.is_online %}
@@ -66,6 +73,7 @@
 </table>
 
   </div>
+  {{ np(pagination, 'company.admin') }}
 </div>
 
 {% endblock %}

@@ -53,6 +53,39 @@ class RegisterForm(FlaskForm):
         db.session.commit()
         return user
 
+class AddUserForm(FlaskForm):
+    username = StringField('用户名',validators=[DataRequired(),Length(1,24)])
+    email = StringField('邮箱', validators=[DataRequired(), Email()])
+    password = PasswordField('密码', validators=[DataRequired(),Length(6,24)])
+    repeat_password = PasswordField('重复密码', validators=[DataRequired(),EqualTo('password')])
+    role = SelectField('用户类型', coerce=int, choices=[(10,'管理员'),(20,'企业'),(30,'求职者')])
+    submit = SubmitField('提交')
+
+    def validate_username(self,field):
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError('用户名已存在')
+
+    def validate_email(self,field):
+        if User.query.filter_by(email=field.data).first():
+            raise ValidationError('邮箱已存在')
+
+    def create_user(self):
+        user = User(
+            username=self.username.data,
+            email=self.email.data,
+            password=self.password.data,
+            role=self.role.data,
+        )
+
+        # 如果是求职者, 则注册时也同时创建它的profile
+        if self.role.data == 30:
+            user.profile = HunterProfile(name=user.username, email=user.email)
+            user.profile.set_password_fromuser(user)
+            db.session.add(user.profile)
+
+        db.session.add(user)
+        db.session.commit()
+        return user
 
 class LoginForm(FlaskForm):
     email = StringField('邮箱', validators=[DataRequired(), Email()])
@@ -81,13 +114,20 @@ class CompanyProfileForm(FlaskForm):
     info = StringField("公司信息", validators=[DataRequired()])
     submit = SubmitField("提交")
 
-    def update_company(self, user):
+
+
+    def update_company(self, user=None):
+
+
         company = Company (name = self.name.data,
             address = self.address.data,
             website = self.website.data,
             url = self.logo.data,
-            description = self.description.data,
-            user = user)
+            description = self.description.data)
+
+        if user:
+            company.user = user
+
 
         db.session.add(company)
         db.session.commit()
@@ -258,7 +298,7 @@ JobForm = model_form(Job,
 class AddJobForm(JobForm):
     submit = SubmitField('提交')
 
-    def addjob(self, company):
+    def addjob(self, company=None):
         job = Job(name=self.name.data,
                   requirements=self.requirements.data,
                   salary_range=self.salary_range.data,
@@ -267,13 +307,19 @@ class AddJobForm(JobForm):
                   experlevel=self.experlevel.data,
                   tags=self.tags.data,
                   cities=self.cities.data)
-        job.company = company
+        if company:
+            job.company = company
 
         db.session.add(job)
         db.session.commit()
+        return job
 
-    def updatejob(self, company, job):
+
+    def updatejob(self, job, company=None):
         self.populate_obj(job)   # 从表单中获取最新数据并填充到对象job
-        job.company = company
+        if company:
+            job.company = company
         db.session.add(job)
         db.session.commit()
+        return job
+
