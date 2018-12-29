@@ -113,12 +113,14 @@ def delievery():
     reject_list= []
     unhandler_list = []
 
+
     page = request.args.get(get_page_parameter(), default=1, type=int)
 
     for job in jobs:
         job_resumes = Job_Resume.query.filter_by(job_id=job.id).all()
         if job_resumes:
             for jr in job_resumes:
+
                 if jr.is_pass is None:
                     unhandler_list.append(jr)
                 elif jr.is_pass is True:
@@ -146,6 +148,7 @@ def delievery():
 
 
 
+
 # 接受求职者
 @company.route('/accept/<int:jobid>/<int:resumeid>')
 @company_required
@@ -165,6 +168,7 @@ def reject(jobid, resumeid):
     db.session.add(jr)
     db.session.commit()
     return redirect(url_for('company.delievery'))
+
 
 
 

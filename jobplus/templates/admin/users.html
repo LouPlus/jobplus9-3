@@ -1,5 +1,14 @@
 {% extends "admin/index.html" %}
 {% from "macros.html" import render_pagination as pn %}
+
+{% block titile %} 用户管理 {% endblock %}
+{% block head_js %}
+  {{ moment.include_jquery() }}
+  {{ moment.include_moment() }}
+  {{ moment.lang('zh-CN') }}
+{% endblock %}
+
+
 {% block addnew %}
 <a href="{{url_for('admin.adduser')}}" type="button" class="btn btn-success btn-admin">添加用户</a>
 {% endblock %}

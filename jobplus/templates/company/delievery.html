@@ -2,12 +2,13 @@
 
 {% block title %} 公司管理 {% endblock %}
 
-
 {% block head_js %}
   {{ moment.include_jquery() }}
   {{ moment.include_moment() }}
   {{ moment.lang('zh-CN') }}
 {% endblock %}
+
+
 
 
 {% block body %}
@@ -36,8 +37,6 @@
       <div id="unhandler" class="tab-pane fade in active">
 
 
-    
-
         <table class="table">
             <thead>
               <tr>
@@ -54,8 +53,10 @@
               <tbody>
 
 
+
           {% if unhandler %}
           {% for item in unhandler %}
+
 
                 <tr>
 
@@ -87,7 +88,6 @@
         </table>
 
       </div>
-
 
       <div id="accept" class="tab-pane fade">
 
@@ -130,6 +130,46 @@
           {% endif %}
             </tbody>
         </table>
+      </div>
+
+        <div id="reject" class="tab-pane fade">
+
+              <table class="table">
+                  <thead>
+                  <tr>
+
+                      <th>职位名称</th>
+                      <th>求职者</th>
+                      <th>简历名称</th>
+                      <th>投档时间</th>
+                      <th>状态</th>
+                  </tr>
+
+                  </thead>
+                  <tbody>
+                  {% if reject %}
+                  {% for item in reject %}
+                  <tr>
+                      <td>{{ item.jobs }}</td>
+                      <td>{{ item.resumes.hunter.name }}</td>
+                      <td>{{ item.resumes }}</td>
+                      <td>{{ moment(item.created_at).format('LLL') }} </td>
+                      <td>
+                          <div class="btn-group" role="group">
+
+                              <a href="{{ item.resumes.path }}" type="button" class="btn btn-default">
+                                  下载
+                              </a>
+                              <a href="{{ url_for('company.accept', jobid=item.jobs.id, resumeid=item.resumes.id) }}" type="button" class="btn btn-default">
+                                  接受
+                              </a>
+                          </div>
+                      </td>
+                  </tr>
+                  {% endfor %}
+                  {% endif %}
+                  </tbody>
+              </table>
 
       </div>
 
@@ -176,7 +216,9 @@
 
     </div>
 
+
   </div>
+
 </div>
 
 

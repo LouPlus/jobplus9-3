@@ -321,5 +321,7 @@ class AddJobForm(JobForm):
             job.company = company
         db.session.add(job)
         db.session.commit()
+
         return job
+
 
