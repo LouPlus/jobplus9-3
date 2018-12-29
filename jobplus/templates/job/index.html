@@ -3,7 +3,7 @@
 
 
 {% block head_css %}
-{{super()}}
+{{ super() }}
 {% endblock %}
 
 {% block title %}职位列表{% endblock %}
@@ -66,8 +66,15 @@
 
 {% endfor %}
 </div>
+
 {{ render_pagination(pagination, 'job.index') }}
+
+
+
 {% endblock %}
+
+
+
 {% block tail_js %}
 {{ super() }}
 <script>

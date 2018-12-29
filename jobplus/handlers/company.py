@@ -1,9 +1,11 @@
 from flask import Blueprint, redirect, url_for, render_template, request, current_app, flash
-from jobplus.models import Company, Job_Resume, db
+from jobplus.models import Company, Job, Job_Resume, db
 
 from jobplus.forms import CompanyProfileForm
 from jobplus.decorators import company_required
 from flask_login import current_user
+
+from flask_paginate import Pagination, get_page_parameter
 
 
 
@@ -83,8 +85,13 @@ def showjob(jobid):
 @company_required
 def admin():
     company = current_user.company
-    jobs = company.jobs
-    return render_template('company/admin.html', cid=company.id, jobs=jobs)
+    page = request.args.get('page', default=1, type=int)
+    pagination = Job.query.filter_by(company_id=company.id).paginate(
+            page=page,
+            per_page=current_app.config['JOBINDEX_PER_PAGE'],
+            error_out=False
+    )
+    return render_template('company/admin.html', cid=company.id, pagination=pagination)
 
 
 
@@ -106,19 +113,38 @@ def delievery():
     reject_list= []
     unhandler_list = []
 
+
+    page = request.args.get(get_page_parameter(), default=1, type=int)
+
     for job in jobs:
         job_resumes = Job_Resume.query.filter_by(job_id=job.id).all()
         if job_resumes:
             for jr in job_resumes:
-                print(jr.is_pass)
+
                 if jr.is_pass is None:
                     unhandler_list.append(jr)
                 elif jr.is_pass is True:
                     accept_list.append(jr)
                 else:
                     reject_list.append(jr)
+    limit = current_app.config['JOBINDEX_PER_PAGE']
+    sp1 = Pagination(page=page, total=len(accept_list),
+                     per_page_parameter=limit, search=False,
+                     record_name='accept')
+    sp2 = Pagination(page=page, total=len(reject_list),
+                     per_page_parameter=limit, search=False,
+                     record_name='reject')
+    sp3 = Pagination(page=page, total=len(unhandler_list),
+                     per_page_parameter=limit, search=False,
+                     record_name='unhandler')
+    return render_template('company/delievery.html',
+                           accept=accept_list,
+                           reject=reject_list ,
+                           unhandler= unhandler_list,
+                           sp1=sp1, sp2=sp2, sp3=sp3)
 
-    return render_template('company/delievery.html', accept=accept_list, reject=reject_list , unhandler= unhandler_list)
+
+
 
 
 

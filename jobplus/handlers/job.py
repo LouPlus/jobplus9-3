@@ -16,6 +16,12 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 
 
+
+from jobplus.decorators import company_required
+
+
+
+
 from jobplus.decorators import company_required
 
 
@@ -38,7 +44,6 @@ def index():
 # 添加标签页面
 @job.route('/createtag', methods=['POST', 'GET'])
 @company_required
-
 def addtag():
     tagform = AddTagForm()
     cityform = AddCityForm()
