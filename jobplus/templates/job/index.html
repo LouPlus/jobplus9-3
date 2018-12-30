@@ -19,7 +19,7 @@
 
 {% block body %}
 <div class="jumbotron">
-  <h1>Todo: 职位过滤</h1>
+  <h1>职位</h1>s
 </div>
 
 <div class="job-list">
@@ -33,7 +33,7 @@
                             [ 发布于{{ moment().fromTime(job.updated_at, refresh=True) }} ]
                         </span>
                     <p>{{ job.requirement }}</p>
-        
+
                     <strong class="text-green">{{ job.salary_range }}</strong><br/>
                     {% for tag in job.tags %}
                         <span class="label label-default">{{ tag.name }}</span>
@@ -42,7 +42,7 @@
                     {% for city in job.cities %}
                         <span class="label label-default">{{city.name}}</span>
                     {% endfor %}<br/>
-        
+
                 </a>
             </div>
             <hr>
@@ -61,7 +61,7 @@
                 <span class="company-meta">{{ job.company.description }}</span>
             </div>
         </div>
-        
+
     </div>
 
 {% endfor %}
