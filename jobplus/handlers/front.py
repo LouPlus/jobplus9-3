@@ -44,7 +44,11 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        login_user(user, form.remember_me.data)
+        if user.allowed == False:
+            flash('该账号已被封禁，无法登录','warnings')
+            return render_template('login.html', form=form)
+        else:
+            slogin_user(user, form.remember_me.data)
         if user.is_admin:
             return redirect(url_for('front.index'))
         if user.is_company:
