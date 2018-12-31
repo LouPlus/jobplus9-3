@@ -87,6 +87,27 @@ class AddUserForm(FlaskForm):
         db.session.commit()
         return user
 
+class UpdateUserForm(FlaskForm):
+    username = StringField('用户名',validators=[DataRequired(),Length(1,24)])
+    email = StringField('邮箱', validators=[DataRequired(), Email()])
+    password = PasswordField('密码', validators=[DataRequired(),Length(6,24)])
+    repeat_password = PasswordField('重复密码', validators=[DataRequired(),EqualTo('password')])
+    role = SelectField('用户类型', coerce=int, choices=[(10,'管理员'),(20,'企业'),(30,'求职者')])
+    submit = SubmitField('提交')
+
+    def update_user(self, user):
+        db.session.delete(user)
+        db.session.commit()
+        user = User(
+            username=self.username.data,
+            email=self.email.data,
+            password=self.password.data,
+            role=self.role.data,
+        )
+        db.session.add(user)
+        db.session.commit()
+        return user
+
 class LoginForm(FlaskForm):
     email = StringField('邮箱', validators=[DataRequired(), Email()])
     password = PasswordField('密码', validators=[DataRequired(), Length(6, 24)])
@@ -132,6 +153,17 @@ class CompanyProfileForm(FlaskForm):
         db.session.add(company)
         db.session.commit()
         return company
+
+    def edit_company(self, company):
+        db.session.delete(company)
+        db.session.commit()
+        company = Company (name = self.name.data,
+            address = self.address.data,
+            website = self.website.data,
+            url = self.logo.data,
+            description = self.description.data)
+        db.session.add(company)
+        db.session.commit()
 
 
 ####################  定义求职者配置表单
@@ -323,5 +355,3 @@ class AddJobForm(JobForm):
         db.session.commit()
 
         return job
-
-
