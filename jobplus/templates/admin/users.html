@@ -41,9 +41,19 @@
           <td>
             <div class="btn-group" role="group">
 
-              <a href="#" type="button" class="btn btn-default">
+              {% if user.is_hunter %}
+              <a href="{{url_for('admin.edit_user', user_id=user.id)}}" type="button" class="btn btn-default">
                 编辑
               </a>
+              {% elif user.is_company %}
+              <a href="{{url_for('admin.edit_company', user_id=user.id)}}" type="button" class="btn btn-default">
+                编辑
+              </a>
+              {% elif user.is_admin %}
+              <a href="{{url_for('admin.edit_admin', user_id=user.id)}}" type="button" class="btn btn-default">
+                编辑
+              </a>
+              {% endif %}
               {% if not user.is_admin and user.allowed == True %}
               <a href="{{url_for('admin.forbid', user_id=user.id)}}" type="button" class="btn btn-default">
                 禁用
