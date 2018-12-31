@@ -154,6 +154,17 @@ class CompanyProfileForm(FlaskForm):
         db.session.commit()
         return company
 
+    def edit_company(self, company):
+        db.session.delete(company)
+        db.session.commit()
+        company = Company (name = self.name.data,
+            address = self.address.data,
+            website = self.website.data,
+            url = self.logo.data,
+            description = self.description.data)
+        db.session.add(company)
+        db.session.commit()
+
 
 ####################  定义求职者配置表单
 class HunterProfileForm(FlaskForm):

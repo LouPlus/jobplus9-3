@@ -157,7 +157,7 @@ def updatecompany(cid):
     company=Company.query.get_or_404(cid)
     form = CompanyProfileForm(obj=company)
     if form.validate_on_submit():
-        form.update_company()
+        form.edit_company(company)
         flash('企业配置更新成功', 'success')
         return redirect(url_for('admin.companies'))
     return render_template('admin/addcompany.html', form=form, cid=cid)
@@ -203,7 +203,7 @@ def edit_company(user_id):
     company=Company.query.filter_by(user_id=user_id).first()
     form = CompanyProfileForm(obj=company)
     if form.validate_on_submit():
-        form.update_company()
+        form.edit_company(company)
         flash('企业配置更新成功', 'success')
         return redirect(url_for('admin.users'))
     return render_template('admin/addcompany.html', form=form, cid=company.id)
