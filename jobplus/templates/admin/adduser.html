@@ -3,6 +3,10 @@
 {% block title %}添加用户{% endblock %}
 {% block body %}
 <div class="form">
+{% if current_user.is_admin %}
+{{ render_form(form, url_for('admin.edit_admin', user_id=user.id), '用户名')}}
+{% else %}
 {{ render_form(form,url_for('admin.adduser'),'用户名') }}
+{% endif %}
 </div>
 {% endblock %}
