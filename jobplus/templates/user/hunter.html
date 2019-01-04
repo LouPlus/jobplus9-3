@@ -134,15 +134,14 @@
                         <td>{{ j.name }}</td>
                         <td>
                             <a class="btn btn-default btn-primary" href="{{ url_for('hunter.rmresume', resumeid=j.id) }}" role="button">删除</a>
-                            <a class="btn btn-default btn-primary" href="url_for('hunter.addresume') }}" role="button">增加</a>
+
                         </td>
 
                     </tr>
                     {% endfor %}
-
-
                     </tbody>
                 </table>
+                <a class="btn btn-default btn-primary" href="{{ url_for('hunter.addresume') }}" role="button">上传简历</a>
             </div>
         </div>
         <!--标签面板结束-->

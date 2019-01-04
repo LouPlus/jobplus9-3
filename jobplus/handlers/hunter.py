@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, abort
+from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
 from flask_login import current_user
 from jobplus.forms import HunterProfileForm
 from jobplus.decorators import user_required
 from jobplus.models import db, Job_Resume, Resume
+import os
+import time
 
 hunter = Blueprint('hunter', __name__, url_prefix='/user')
 
@@ -39,6 +41,7 @@ def usercenter():
         # 查询所有简历投递过的所有职位记录
         jrs.extend(Job_Resume.query.filter_by(resume_id=r.id).all())
 
+    jrs = set(jrs)
     job_count = []
     jobpass_count = []
     for j in jrs:
@@ -86,4 +89,20 @@ def rmresume(resumeid):
 @hunter.route('/resume/add', methods=['GET', 'POST'])
 @user_required
 def addresume():
-    return '上传简历'
+    if(request.method == 'GET'):
+        return render_template('user/addresume.html')
+    else:
+        name = request.form.get('name')
+        filename = current_user.username + str(time.time())
+        file = request.files.get('file')
+        print(request.form.get('file'))
+
+        path=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static'+os.path.sep+'jianlis')
+        file.save(path + os.path.sep + filename)
+
+
+        resume = Resume(name=name, path=url_for('static', filename='jianlis/'+filename), hunter=current_user)
+        db.session.add(resume)
+        db.session.commit()
+
+        return 'hehe'

@@ -4,7 +4,6 @@ class BaseConfig:
     SECRET_KEY='codeofteam9-3'
     SQLALCHEMY_TRACK_MODIFICATIONS=False
     JOBINDEX_PER_PAGE = 9
-    # JIANLI_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'jianlis')
     ADMIN_PER_PAGE = 12
 
 class DevelopmentConfig(BaseConfig):
