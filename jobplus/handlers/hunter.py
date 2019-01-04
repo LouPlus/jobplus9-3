@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, request, current_app
 from flask_login import current_user
 from jobplus.forms import HunterProfileForm
+
 from jobplus.decorators import user_required,  allowed_file, remove_file
 from jobplus.models import db, Job_Resume, Resume
 import os
 import time
+
 
 hunter = Blueprint('hunter', __name__, url_prefix='/user')
 
@@ -41,7 +43,9 @@ def usercenter():
         # 查询所有简历投递过的所有职位记录
         jrs.extend(Job_Resume.query.filter_by(resume_id=r.id).all())
 
+
     jrs = set(jrs)
+
     job_count = []
     jobpass_count = []
     for j in jrs:
@@ -55,6 +59,8 @@ def usercenter():
             jobs_pass = Job_Resume.query.filter_by(job_id=j.job_id, is_pass=True).all()
             count=len(jobs_pass)
             jobpass_count.append({j: count})
+
+
 
 
 
@@ -72,7 +78,9 @@ def cancel(jobid, resumeid):
     jr = Job_Resume.query.filter_by(job_id=jobid, resume_id=resumeid).first()
     db.session.delete(jr)
     db.session.commit()
+
     flash('投档取消成功', 'success')
+
     return redirect(url_for('.usercenter'))
 
 
@@ -81,6 +89,7 @@ def cancel(jobid, resumeid):
 @user_required
 def rmresume(resumeid):
     resume = Resume.query.get_or_404(resumeid)
+
     # 删除服务器上的简历
     try:
         db.session.delete(resume)
@@ -118,6 +127,7 @@ def addresume():
             flash('简历上传成功', 'success')
             return redirect(url_for('.usercenter'))
         abort(404)
+
 
 
 
