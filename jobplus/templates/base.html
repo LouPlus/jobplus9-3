@@ -72,7 +72,9 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                             aria-expanded="false"><span id="username">{{ current_user.username }}</span><span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">我的主页</a></li>
+                            {% if current_user.is_authenticated and current_user.is_hunter %}
+                            <li><a href="{{ url_for('hunter.usercenter') }}">我的主页</a></li>
+                            {% endif %}
                             <li role="separator" class="divider"></li>
                             <li><a href="{{ url_for('front.logout') }}">退出登录</a></li>
                         </ul>

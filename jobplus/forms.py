@@ -354,4 +354,6 @@ class AddJobForm(JobForm):
         db.session.add(job)
         db.session.commit()
 
+
         return job
+
