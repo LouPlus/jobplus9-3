@@ -15,6 +15,8 @@ from jobplus.models import Jtag, Jcity, Salary_Range
 from werkzeug.utils import secure_filename
 from wtforms.ext.sqlalchemy.orm import model_form
 
+from jobplus.decorators import allowed_file
+
 
 import re
 import os
@@ -213,23 +215,21 @@ class HunterProfileForm(FlaskForm):
 
         # 处理文件上传
         f = self.resume_doc.data
-        if f:
+        if f and allowed_file(f.filename):
             # 设置简历
             if not profile.resumes:
                 profile.resumes = []
             jianlidir = os.path.join(current_app.static_folder, 'jianlis')
-            print(f.filename, type(f.filename))
             suffix = secure_filename(f.filename).split('.')[-1]
-            #print(filename, type(filename))
+
 
 
             length=len(profile.resumes)+1
             filename = str(time.time())+str(length)+'.'+suffix
-            print(filename)
             f.save(os.path.join(jianlidir, filename))
             resume = Resume(
                 path=url_for('static', filename='jianlis/'+filename),
-                name="{}_{}-resume".format(profile.name,str(length))
+                name="{}_{}-resume".format(profile.name, str(length))
             )
             db.session.add(resume)   # 添加简历
             profile.resumes.append(resume)

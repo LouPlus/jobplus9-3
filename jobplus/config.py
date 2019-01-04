@@ -4,6 +4,7 @@ class BaseConfig:
     SECRET_KEY='codeofteam9-3'
     SQLALCHEMY_TRACK_MODIFICATIONS=False
     JOBINDEX_PER_PAGE = 9
+    ALLOWED_EXTENSIONS = set(['doc', 'pdf'])
 
 
     ADMIN_PER_PAGE = 12
