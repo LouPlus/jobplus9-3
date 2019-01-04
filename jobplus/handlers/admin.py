@@ -1,7 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, current_app, request
 from jobplus.decorators import admin_required
 from jobplus.models import db, Job, User, Company
+
+
 from jobplus.forms import AddJobForm, AddUserForm, UpdateUserForm, CompanyProfileForm, HunterProfileForm
+
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -32,6 +35,8 @@ def jobs():
         error_out=False
     )
     return render_template('admin/jobs.html', pagination=pagination)
+
+
 
 
 
@@ -157,7 +162,9 @@ def updatecompany(cid):
     company=Company.query.get_or_404(cid)
     form = CompanyProfileForm(obj=company)
     if form.validate_on_submit():
+
         form.edit_company(company)
+
         flash('企业配置更新成功', 'success')
         return redirect(url_for('admin.companies'))
     return render_template('admin/addcompany.html', form=form, cid=cid)
@@ -185,6 +192,7 @@ def companies():
         error_out=False
     )
     return render_template('admin/companies.html', pagination=pagination)
+
 
 @admin.route('/edit/<int:user_id>', methods=['GET', 'POST'])
 @admin_required
@@ -218,3 +226,4 @@ def edit_admin(user_id):
         flash('更新用户成功','success')
         return redirect(url_for('admin.users'))
     return render_template('admin/adduser.html', form=form, user=user)
+

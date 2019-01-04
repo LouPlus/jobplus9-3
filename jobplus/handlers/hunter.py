@@ -1,8 +1,12 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, abort
+from flask import Blueprint, render_template, redirect, url_for, flash, abort, request, current_app
 from flask_login import current_user
 from jobplus.forms import HunterProfileForm
-from jobplus.decorators import user_required
+
+from jobplus.decorators import user_required,  allowed_file, remove_file
 from jobplus.models import db, Job_Resume, Resume
+import os
+import time
+
 
 hunter = Blueprint('hunter', __name__, url_prefix='/user')
 
@@ -39,6 +43,9 @@ def usercenter():
         # 查询所有简历投递过的所有职位记录
         jrs.extend(Job_Resume.query.filter_by(resume_id=r.id).all())
 
+
+    jrs = set(jrs)
+
     job_count = []
     jobpass_count = []
     for j in jrs:
@@ -55,7 +62,8 @@ def usercenter():
 
 
 
-    print(jrs, job_count, jobpass_count)
+
+
     return render_template('user/hunter.html',
                            user=current_user,
                            resumes=resumes,
@@ -70,6 +78,9 @@ def cancel(jobid, resumeid):
     jr = Job_Resume.query.filter_by(job_id=jobid, resume_id=resumeid).first()
     db.session.delete(jr)
     db.session.commit()
+
+    flash('投档取消成功', 'success')
+
     return redirect(url_for('.usercenter'))
 
 
@@ -78,12 +89,46 @@ def cancel(jobid, resumeid):
 @user_required
 def rmresume(resumeid):
     resume = Resume.query.get_or_404(resumeid)
-    db.session.delete(resume)
-    db.session.commit()
+
+    # 删除服务器上的简历
+    try:
+        db.session.delete(resume)
+        db.session.commit()
+    except Exception:
+        abort(404)
+    else:
+        remove_file(resume.path)
+        flash('简历删除成功', 'success')
     return redirect(url_for('.usercenter'))
+
 
 
 @hunter.route('/resume/add', methods=['GET', 'POST'])
 @user_required
 def addresume():
-    return '上传简历'
+    if(request.method == 'GET'):
+        return render_template('user/addresume.html')
+    else:
+        name = request.form.get('name')
+        file = request.files.get('file')
+        if not file or not allowed_file(file.filename):
+            abort(404)
+
+        suffix = '.' + file.filename.split('.')[-1]
+
+        path = os.path.join(current_app.static_folder, 'jianlis')
+        filename = current_user.username + str(time.time()) + suffix
+        file.save(path + os.path.sep + filename)
+        resume = Resume(name=name, path=url_for('static', filename='jianlis/'+filename),
+                        hunter=current_user.profile)
+        if resume:
+            db.session.add(resume)
+            db.session.commit()
+            flash('简历上传成功', 'success')
+            return redirect(url_for('.usercenter'))
+        abort(404)
+
+
+
+
+

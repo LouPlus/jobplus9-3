@@ -149,6 +149,8 @@ def delievery():
 
 
 
+
+
 # 接受求职者
 @company.route('/accept/<int:jobid>/<int:resumeid>')
 @company_required
