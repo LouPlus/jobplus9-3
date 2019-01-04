@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+
+
+{% block title %}
+求职者主页
+{% endblock %}
+
+
+
+{% block body %}
+<div class="banner-container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="pull-left userinfo-banner-avatar">
+
+                <div class="user-avatar ">
+                    <a class="avatar" href="{{ url_for('hunter.profile') }}" target="_blank">
+                        <img src="https://dn-simplecloud.shiyanlou.com/gravatarFC2MALEPK3XQ.jpg?imageView2/1/w/200/h/200">
+                    </a>
+
+                    <a class="member-icon" href="/vip" target="_blank">
+
+                        <img class="user-icon" src="&#10;            &#10;                https://static.shiyanlou.com/img/plus-vip-icon.png&#10;                &#10;            &#10;          " title="标准会员">
+
+                    </a>
+
+                </div>
+
+
+
+            </div>
+            <div class="pull-left userinfo-banner-details">
+                <div class="userinfo-banner-meta">
+                    <span class="username">{{ user.name }}</span>
+                </div>
+
+
+                <div class="userinfo-banner-status">
+
+                    <p>{{ user.email }}</p>
+                    <p>{{ user.profile.phone_num }}</p>
+
+                </div>
+
+
+                <span class="join-date">{{ user.created_at.date() }} 加入<strong>JobPlus</strong></span>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<hr>
+
+        <!--投递列表 标签面板-->
+        <ul id="myTab" class="nav nav-tabs">
+            <li class="active"><a href="#home" data-toggle="tab">
+                已投递职位</a></li>
+            <li><a href="#passed" data-toggle="tab">已受邀职位</a></li>
+            <li><a href="#resume" data-toggle="tab">简历管理</a></li>
+        </ul>
+
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade in active" id="home">
+                <table class="table table-striped">
+                    <caption>投递详情</caption>
+                    <thead>
+                    <tr>
+                        <th>招聘职位</th>
+                        <th>招聘企业</th>
+                        <th>投递人数</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in job_count %}
+                    {% for k,v in i.items() %}
+                    <tr>
+                        <td>{{ k.jobs.name }}</td>
+                        <td>{{ k.jobs.company.name }}</td>
+                        <td>{{ v  }}</td>
+                        <td>
+                            <a class="btn btn-default btn-primary" href="{{ url_for('hunter.cancel', jobid=k.job_id, resumeid=k.resume_id) }}"
+                               role="button">取消投递</a>
+                        </td>
+                    {% endfor %}
+                    {% endfor %}
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+
+            <div class="tab-pane fade" id="passed">
+                <table class="table table-striped">
+                    <caption>受邀详情</caption>
+                    <thead>
+                    <tr>
+                        <th>受邀职位</th>
+                        <th>受邀企业</th>
+                        <th>受邀人数</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for j in jobpass_count %}
+                    {% for k, v in j.items() %}
+                    <tr>
+                        <td>{{ k.jobs.name }}</td>
+                        <td>{{ k.jobs.company.name }}</td>
+                        <td>{{ v  }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="resume">
+                <table class="table table-striped">
+                    <caption>简历详情</caption>
+                    <thead>
+                    <tr>
+                        <th>简历名称</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for j in resumes %}
+                    <tr>
+                        <td>{{ j.name }}</td>
+                        <td>
+                            <a class="btn btn-default btn-primary" href="{{ url_for('hunter.rmresume', resumeid=j.id) }}" role="button">删除</a>
+
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <a class="btn btn-default btn-primary" href="{{ url_for('hunter.addresume') }}" role="button">上传简历</a>
+            </div>
+        </div>
+        <!--标签面板结束-->
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+{% block tail_js %}
+{{ super() }}
+<script>
+$(function(){
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        // 获取已激活的标签页的名称
+        var activeTab = $(e.target).text();
+        // 获取前一个激活的标签页的名称
+        var previousTab = $(e.relatedTarget).text();
+        $(".active-tab span").html(activeTab);
+        $(".previous-tab span").html(previousTab);
+    });
+});
+</script>
+{% endblock %}

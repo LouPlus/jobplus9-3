@@ -1,5 +1,16 @@
 {% extends "admin/index.html" %}
 {% from "macros.html" import render_pagination as pn %}
+
+
+{% block titile %} 用户管理 {% endblock %}
+{% block head_js %}
+  {{ moment.include_jquery() }}
+  {{ moment.include_moment() }}
+  {{ moment.lang('zh-CN') }}
+{% endblock %}
+
+
+
 {% block addnew %}
 <a href="{{url_for('admin.adduser')}}" type="button" class="btn btn-success btn-admin">添加用户</a>
 {% endblock %}
@@ -32,9 +43,17 @@
           <td>
             <div class="btn-group" role="group">
 
-              <a href="#" type="button" class="btn btn-default">
+              {% if user.is_hunter %}
+              <a href="{{url_for('admin.edit_user', user_id=user.id)}}" type="button" class="btn btn-default">
                 编辑
               </a>
+              {% elif user.is_company %}
+              
+              {% elif user.is_admin %}
+              <a href="{{url_for('admin.edit_admin', user_id=user.id)}}" type="button" class="btn btn-default">
+                编辑
+              </a>
+              {% endif %}
               {% if not user.is_admin and user.allowed == True %}
               <a href="{{url_for('admin.forbid', user_id=user.id)}}" type="button" class="btn btn-default">
                 禁用
@@ -57,6 +76,7 @@
               {% endif %}
 
               {% endif %}
+
 
             </div>
           </td>

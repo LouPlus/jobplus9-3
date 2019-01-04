@@ -16,6 +16,12 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 
 
+
+from jobplus.decorators import company_required
+
+
+
+
 from jobplus.decorators import company_required
 
 
