@@ -23,7 +23,7 @@
 
     {% for company in pagination.items %}
         <div class="col-sm-6 col-md-3 company-item">
-            <div class="thumbnail">
+            <div class="thumbnail" style="width:255px; height:253px">
 
                 <a href="{{ url_for('company.detail', cid=company.id) }}">
 

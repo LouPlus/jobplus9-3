@@ -1,6 +1,6 @@
 {% macro job_item(job) %}
 <div class="col-sm-6 col-md-4">
-    <div class="thumbnail">
+    <div class="thumbnail" style="width:360px; height:195px">
         <div class="caption">
             <div class="mb-small">
                 <a href="{{ url_for('job.detail', jobid= job.id)}}"><h3 class="job-title">{{ job.name | default('Python高级工程师', true) }}</h3></a>
@@ -36,7 +36,7 @@
 {% endmacro %}
 {% macro company_item(company) %}
 <div class="col-sm-6 col-md-3">
-    <div class="thumbnail">
+    <div class="thumbnail" style="width:263px; height:162px">
         <div class="company">
             <img src="{{ company.url }}"
                 alt="...">

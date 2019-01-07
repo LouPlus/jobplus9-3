@@ -139,18 +139,25 @@ class CompanyProfileForm(FlaskForm):
 
 
 
-    def update_company(self, user=None):
+    def update_company(self, user=None, company=None):
+        if not company:
+            company = Company(name=self.name.data,
+                address=self.address.data,
+                website=self.website.data,
+                url=self.logo.data,
+                phone=self.phone_number.data,
+                profile=self.info.data,
+                description=self.description.data)
 
+        else:
+            self.populate_obj(company)
+            # 补录数据
+            company.profile = self.info.data
+            company.phone = self.phone_number.data
 
-        company = Company (name = self.name.data,
-            address = self.address.data,
-            website = self.website.data,
-            url = self.logo.data,
-            description = self.description.data)
 
         if user:
             company.user = user
-
 
         db.session.add(company)
         db.session.commit()
@@ -159,7 +166,7 @@ class CompanyProfileForm(FlaskForm):
     def edit_company(self, company):
         db.session.delete(company)
         db.session.commit()
-        company = Company (name = self.name.data,
+        company = Company(name = self.name.data,
             address = self.address.data,
             website = self.website.data,
             url = self.logo.data,
