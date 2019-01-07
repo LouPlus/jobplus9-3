@@ -136,6 +136,9 @@ class Company(Base):
     url = db.Column(db.String(128),
                     default="https://pic.baike.soso.com/ugc/baikepic2/18723/20180202144851-1145158508_jpg_462_344_6048.jpg/0")
     address = db.Column(db.String(64), nullable=False)
+    # 公司电话
+    phone = db.Column(db.String(11))
+
     jobs = db.relationship('Job')
 
 

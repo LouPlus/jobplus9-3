@@ -29,12 +29,16 @@ def index():
 @company.route('/profile', methods=['GET', 'POST'])
 @company_required
 def profile():
-    form = CompanyProfileForm()
+    company = current_user.company
+    if not company:
+        form = CompanyProfileForm()
+    else:
+        form = CompanyProfileForm(obj=company)
     if form.validate_on_submit():
-        form.update_company(current_user)
+        form.update_company(user=current_user, company=company)
         flash('公司注册成功', 'success')
         return redirect(url_for('front.index'))
-    return render_template('company/profile.html', form = form)
+    return render_template('company/profile.html', form=form)
 
 
 
