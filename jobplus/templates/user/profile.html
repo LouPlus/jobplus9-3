@@ -4,6 +4,8 @@
 {% block title %}用户详情配置{% endblock %}
 
 {% block body %}
+<h3 class="text-center">求职者配置</h3>
+<a class="btn btn-default btn-link" href="{{ url_for('front.index') }}" style="float:right" role="button">跳过>>></a>
 
 <div class="form">
     {% if not current_user.is_admin %}
@@ -12,5 +14,4 @@
     {{ render_form(form, url_for('admin.edit_user', user_id=user.id),'') }}
     {% endif %}
 </div>
-
 {% endblock %}
